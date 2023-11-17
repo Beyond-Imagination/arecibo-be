@@ -7,6 +7,7 @@ import cors from 'cors'
 
 import { NODE_ENV, PORT } from '@/config'
 import { logger, loggerMiddleware } from '@/utils/logger'
+import middlewares from '@/middlewares'
 
 export default class API {
     app: express.Application
@@ -28,6 +29,7 @@ export default class API {
         this.app.use(express.urlencoded({ extended: true }))
         this.app.use(hpp())
         this.app.use(loggerMiddleware)
+        this.app.use(middlewares.space.classNameRouter)
     }
 
     setController() {}
