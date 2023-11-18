@@ -9,4 +9,6 @@ module.exports = {
     tabWidth: 4,
     // 코드 한줄이 maximum 80칸
     printWidth: 80,
+    // Window, Linux, Unix 간 줄바꿈 차이 자동 감지 후 적절한 줄 바꿈 문자 사용
+    endOfLine: 'auto',
 };
