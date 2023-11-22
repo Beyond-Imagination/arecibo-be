@@ -20,11 +20,11 @@ export class APIError extends Error {
 
     toJSON() {
         return {
-            satus: this.statusCode,
+            status: this.statusCode,
             code: this.errorCode,
             message: this.message,
             stack: this.stack,
-            cuase: this.cause,
+            cause: this.cause,
         }
     }
 }
