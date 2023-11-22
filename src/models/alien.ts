@@ -14,7 +14,7 @@ export class Alien {
     public oauthId: string
 
     @prop()
-    public subscribe: [string, ]
+    public subscribe: string[]
 
     @prop()
     public createdAt: Date
