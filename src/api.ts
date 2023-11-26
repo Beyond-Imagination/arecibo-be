@@ -34,7 +34,9 @@ export default class API {
 
     setController() {}
 
-    setPostMiddleware() {}
+    setPostMiddleware() {
+        this.app.use(middlewares.error)
+    }
 
     public listen() {
         this.server = this.app.listen(PORT, () => {
