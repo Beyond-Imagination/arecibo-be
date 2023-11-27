@@ -27,6 +27,8 @@ export class Alien {
 
     @prop()
     public status: number
+
+    // todo: add function updateNickname
 }
 
 export const AlienModel = getModelForClass(Alien)

@@ -1400,6 +1400,11 @@ expect@^29.0.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
+express-asyncify@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/express-asyncify/-/express-asyncify-2.1.2.tgz#26fff4bc2ae7ef9ea4f2fb6a0ede8f946a4d5648"
+  integrity sha512-LHtXdJ0Op1K7K/daRMzAIHdYluk6GE3GBX7HlmrltpC1XNu8VwTYQv0U6xHyFCTpe5HAYdbVaGQxQcywTDWZeQ==
+
 express-winston@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/express-winston/-/express-winston-4.2.0.tgz#e9d535d52aa4c125a54a29cce132ae2e3633f4fa"

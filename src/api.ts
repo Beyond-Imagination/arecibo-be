@@ -7,6 +7,7 @@ import cors from 'cors'
 
 import { NODE_ENV, PORT } from '@/config'
 import { logger, loggerMiddleware } from '@/utils/logger'
+import controllers from '@/controllers'
 import middlewares from '@/middlewares'
 
 export default class API {
@@ -32,7 +33,9 @@ export default class API {
         this.app.use(middlewares.space.classNameRouter)
     }
 
-    setController() {}
+    setController() {
+        this.app.use('/v1/aliens', controllers.v1.aliens)
+    }
 
     setPostMiddleware() {
         this.app.use(middlewares.error)
