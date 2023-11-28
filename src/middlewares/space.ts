@@ -1,10 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 
-export const classNameRouter = (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
+export const classNameRouter = (req: Request, res: Response, next: NextFunction) => {
     switch (req.body.className) {
         case 'InitPayload': // init install by marketplace
             req.url = '/v1/webhooks/install'

@@ -3,12 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import { APIError, InternalServerError } from '@/types/errors'
 import { logger } from '@/utils/logger'
 
-const errorMiddleware = (
-    error: APIError,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
+const errorMiddleware = (error: APIError, req: Request, res: Response, next: NextFunction) => {
     try {
         if (!(error instanceof APIError)) {
             error = new InternalServerError(error)

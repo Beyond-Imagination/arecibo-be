@@ -43,9 +43,7 @@ export default class API {
 
     public listen() {
         this.server = this.app.listen(PORT, () => {
-            logger.info(
-                `🚀 App listening on the port: ${PORT} ENV: ${NODE_ENV}`,
-            )
+            logger.info(`🚀 App listening on the port: ${PORT} ENV: ${NODE_ENV}`)
         })
     }
 

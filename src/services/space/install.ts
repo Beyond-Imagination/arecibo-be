@@ -2,20 +2,11 @@ import fetch from 'node-fetch'
 
 import { errors, installInfo, space } from '@/types'
 
-export async function sync(
-    organization: space.IOrganizationSecret,
-    installInfo: installInfo,
-) {
-    await Promise.all([
-        setUIExtension(organization, installInfo),
-        requestRights(organization, installInfo),
-    ])
+export async function sync(organization: space.IOrganizationSecret, installInfo: installInfo) {
+    await Promise.all([setUIExtension(organization, installInfo), requestRights(organization, installInfo)])
 }
 
-async function setUIExtension(
-    organization: space.IOrganizationSecret,
-    installInfo: installInfo,
-): Promise<void> {
+async function setUIExtension(organization: space.IOrganizationSecret, installInfo: installInfo): Promise<void> {
     const url = `${organization.serverUrl}/api/http/applications/ui-extensions`
     const body = JSON.stringify(installInfo.uiExtension)
     const response = await fetch(url, {
@@ -33,12 +24,8 @@ async function setUIExtension(
     return
 }
 
-async function requestRights(
-    organization: space.IOrganizationSecret,
-    installInfo: installInfo,
-): Promise<void> {
-    const url =
-        '${organization.serverUrl}/api/http/applications/clientId:${organization.clientId}/authorizations/authorized-rights/request-rights'
+async function requestRights(organization: space.IOrganizationSecret, installInfo: installInfo): Promise<void> {
+    const url = '${organization.serverUrl}/api/http/applications/clientId:${organization.clientId}/authorizations/authorized-rights/request-rights'
     const body = JSON.stringify(installInfo.right)
     const response = await fetch(url, {
         method: 'PATCH',

@@ -3,10 +3,7 @@ import fetch from 'node-fetch'
 import { IOrganizationSecret, Profile } from '@/types/space'
 import { Unauthorized } from '@/types/errors'
 
-export async function getUserProfile(
-    token: string,
-    secret: IOrganizationSecret,
-): Promise<Profile> {
+export async function getUserProfile(token: string, secret: IOrganizationSecret): Promise<Profile> {
     const url = `${secret.serverUrl}/api/http/team-directory/profiles/me`
 
     const response = await fetch(url, {

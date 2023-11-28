@@ -4,12 +4,7 @@ export class APIError extends Error {
     message: string
     cause: Error | string
 
-    constructor(
-        statusCode: number,
-        errorCode: number,
-        message: string,
-        cause: Error | string = null,
-    ) {
+    constructor(statusCode: number, errorCode: number, message: string, cause: Error | string = null) {
         super(message)
 
         this.statusCode = statusCode
