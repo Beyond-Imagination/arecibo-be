@@ -34,6 +34,7 @@ export default class API {
     }
 
     setController() {
+        this.app.use('/v1/webhooks', controllers.v1.webhooks)
         this.app.use('/v1/aliens', controllers.v1.aliens)
     }
 
