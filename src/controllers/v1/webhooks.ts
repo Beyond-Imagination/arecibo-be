@@ -1,7 +1,7 @@
 import express from 'express'
 import asyncify from 'express-asyncify'
 
-import { ChangeServerUrlPayload, InitPayload } from '@/types/space'
+import { InitPayload, ChangeServerUrlPayload, ApplicationUninstalledPayload } from '@/types/space'
 import { OrganizationModel } from '@/models/organization'
 import { sync } from '@/services/space'
 import { getInstallInfo } from '@/utils/version'
@@ -28,6 +28,12 @@ router.post('/install', async (req, res) => {
 router.put('/changeServerUrl', async (req, res) => {
     const body = req.body as ChangeServerUrlPayload
     await OrganizationModel.updateServerUrlByClientId(body.clientId, body.newServerUrl)
+    res.sendStatus(204)
+})
+
+router.delete('/uninstall', async (req, res) => {
+    const body = req.body as ApplicationUninstalledPayload
+    await OrganizationModel.deleteByClientId(body.clientId)
     res.sendStatus(204)
 })
 
