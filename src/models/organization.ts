@@ -1,9 +1,12 @@
 import { DeleteResult } from 'mongodb'
 import mongoose from 'mongoose'
 import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
-import { OrganizationNotFoundException } from '@/types/errors/database'
 
-export class Organization {
+import { space } from '@/types'
+import { OrganizationNotFoundException } from '@/types/errors/database'
+import { getBearerToken } from '@/services/space'
+
+export class Organization implements space.IOrganizationSecret {
     public _id: mongoose.Types.ObjectId
 
     @prop({ required: true, unique: true })
@@ -50,6 +53,10 @@ export class Organization {
         } else {
             throw new OrganizationNotFoundException()
         }
+    }
+
+    public async getBearerToken(): Promise<string> {
+        return getBearerToken(this)
     }
 }
 

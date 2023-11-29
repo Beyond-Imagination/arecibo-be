@@ -5,8 +5,11 @@ import { ChangeServerUrlPayload, InitPayload } from '@/types/space'
 import { OrganizationModel } from '@/models/organization'
 import { sync } from '@/services/space'
 import { getInstallInfo } from '@/utils/version'
+import { verifySpaceRequest } from '@/middlewares/space'
 
 const router = asyncify(express.Router())
+
+router.use(verifySpaceRequest)
 
 router.post('/install', async (req, res) => {
     const body = req.body as InitPayload

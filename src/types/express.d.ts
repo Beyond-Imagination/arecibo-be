@@ -1,10 +1,12 @@
 import { IOrganizationSecret } from '@/types/space'
+import { Organization } from '@/models/organization'
 
 declare global {
     namespace Express {
         interface Request {
             _routeWhitelists: { body: string[] }
             _routeBlacklists: { body: string[] }
+            organization: Organization
             organizationSecret: IOrganizationSecret
         }
         interface Response {
