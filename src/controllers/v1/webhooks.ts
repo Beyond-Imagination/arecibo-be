@@ -1,7 +1,7 @@
 import express from 'express'
 import asyncify from 'express-asyncify'
 
-import { InitPayload } from '@/types/space'
+import { ChangeServerUrlPayload, InitPayload } from '@/types/space'
 import { OrganizationModel } from '@/models/organization'
 import { sync } from '@/services/space'
 import { getInstallInfo } from '@/utils/version'
@@ -19,6 +19,12 @@ router.post('/install', async (req, res) => {
         admin: [body.userId],
         version: installInfo.version,
     })
+    res.sendStatus(204)
+})
+
+router.put('/changeServerUrl', async (req, res) => {
+    const body = req.body as ChangeServerUrlPayload
+    await OrganizationModel.updateServerUrlByClientId(body.clientId, body.newServerUrl)
     res.sendStatus(204)
 })
 
