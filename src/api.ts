@@ -36,6 +36,7 @@ export default class API {
     setController() {
         this.app.use('/v1/webhooks', controllers.v1.webhooks)
         this.app.use('/v1/aliens', controllers.v1.aliens)
+        this.app.use('/v1/planets/:planetId/messages', controllers.v1.messages)
     }
 
     setPostMiddleware() {

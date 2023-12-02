@@ -1,7 +1,11 @@
-import mongoose from 'mongoose'
-import { getModelForClass, prop } from '@typegoose/typegoose'
+import mongoose, { PaginateOptions } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
+import { getModelForClass, prop, plugin, ReturnModelType } from '@typegoose/typegoose'
 
+@plugin(mongoosePaginate)
 export class Message {
+    static paginate: mongoose.PaginateModel<typeof Message>['paginate']
+
     public _id: mongoose.Types.ObjectId
 
     @prop({ required: true })
@@ -14,7 +18,10 @@ export class Message {
     content: string
 
     @prop({ required: true })
-    author: string
+    author: {
+        nickname: string
+        organization: string
+    }
 
     @prop({ default: 0 })
     commentCount: number
@@ -33,6 +40,37 @@ export class Message {
 
     @prop()
     updatedAt: Date
+
+    public toJSON(): object {
+        return {
+            _id: this._id,
+            title: this.title,
+            content: this.content,
+            author: this.author,
+            commentCount: this.commentCount,
+            likeCount: this.likeCount,
+            isBlind: this.isBlind,
+            createdAt: this.createdAt,
+            updatedAd: this.updatedAt,
+        }
+    }
+
+    public static async findByPlanetId(
+        this: ReturnModelType<typeof Message>,
+        planetId: string,
+        page: number,
+        limit: number,
+        sort: object,
+    ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<typeof Message, object, PaginateOptions>>> {
+        return await this.paginate(
+            { planetId: planetId },
+            {
+                sort: sort,
+                page: page,
+                limit: limit,
+            },
+        )
+    }
 }
 
 export const MessageModel = getModelForClass(Message)
