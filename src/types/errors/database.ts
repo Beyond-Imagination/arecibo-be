@@ -7,3 +7,11 @@ export class OrganizationNotFoundException extends APIError {
         Error.captureStackTrace(this, OrganizationNotFoundException)
     }
 }
+
+export class MessageNotFoundException extends APIError {
+    constructor() {
+        super(404, 610, 'message not found')
+        Object.setPrototypeOf(this, MessageNotFoundException.prototype)
+        Error.captureStackTrace(this, MessageNotFoundException)
+    }
+}

@@ -1,6 +1,7 @@
 import mongoose, { PaginateOptions } from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 import { getModelForClass, prop, plugin, ReturnModelType } from '@typegoose/typegoose'
+import { MessageNotFoundException } from '@/types/errors/database'
 
 @plugin(mongoosePaginate)
 export class Message {
@@ -70,6 +71,19 @@ export class Message {
                 limit: limit,
             },
         )
+    }
+
+    public static async findBytId(this: ReturnModelType<typeof Message>, messageId: string): Promise<Message> {
+        return this.findByFilter({ _id: messageId })
+    }
+
+    private static async findByFilter(this: ReturnModelType<typeof Message>, filter: object): Promise<Message> {
+        const message = await this.findOne(filter).exec()
+        if (message) {
+            return message
+        } else {
+            throw new MessageNotFoundException()
+        }
     }
 }
 
