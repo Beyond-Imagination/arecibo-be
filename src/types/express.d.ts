@@ -1,4 +1,4 @@
-import { IOrganizationSecret } from '@/types/space'
+import { IOrganizationSecret, Profile } from '@/types/space'
 import { Organization } from '@/models/organization'
 
 declare global {
@@ -8,6 +8,7 @@ declare global {
             _routeBlacklists: { body: string[] }
             organization: Organization
             organizationSecret: IOrganizationSecret
+            user: Profile
         }
         interface Response {
             meta: {

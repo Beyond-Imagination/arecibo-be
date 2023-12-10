@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import jwkToPem from 'jwk-to-pem'
 
 import { OrganizationModel } from '@/models/organization'
-import { getPublicKeys } from '@/services/space'
+import { getPublicKeys, getUserProfile } from '@/services/space'
 import { space, errors } from '@/types'
 
 export const classNameRouter = (req: Request, res: Response, next: NextFunction) => {
@@ -71,3 +71,14 @@ async function verifySignature(req: Request, res: Response, next: NextFunction) 
 }
 
 export const verifySpaceRequest = [setOrganization, verifySignature]
+
+async function verifyUser(req: Request, res: Response, next: NextFunction) {
+    const token = req.header('Authorization')
+    const secret = req.organizationSecret
+
+    req.user = await getUserProfile(token, secret)
+
+    next()
+}
+
+export const verifyUserRequest = [setOrganization, verifyUser]
