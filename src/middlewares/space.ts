@@ -5,6 +5,7 @@ import jwkToPem from 'jwk-to-pem'
 import { OrganizationModel } from '@/models/organization'
 import { getPublicKeys, getUserProfile } from '@/services/space'
 import { space, errors } from '@/types'
+import { AlienModel } from '@/models/alien'
 
 export const classNameRouter = (req: Request, res: Response, next: NextFunction) => {
     switch (req.body.className) {
@@ -77,8 +78,22 @@ async function verifyUser(req: Request, res: Response, next: NextFunction) {
     const secret = req.organizationSecret
 
     req.user = await getUserProfile(token, secret)
+    req.provider = 'space'
 
     next()
 }
 
-export const verifyUserRequest = [setOrganization, verifyUser]
+export async function setAlien(req: Request, res: Response, next: NextFunction) {
+    try {
+        req.alien = await AlienModel.findBytId('space', req.user.id)
+        next()
+    } catch (e) {
+        if (e instanceof errors.AlienNotFoundException) {
+            next()
+        } else {
+            next(e)
+        }
+    }
+}
+
+export const verifySpaceUserRequest = [setOrganization, verifyUser, setAlien]

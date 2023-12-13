@@ -23,3 +23,11 @@ export class CommentNotFoundException extends APIError {
         Error.captureStackTrace(this, CommentNotFoundException)
     }
 }
+
+export class AlienNotFoundException extends APIError {
+    constructor() {
+        super(404, 630, 'alien not found')
+        Object.setPrototypeOf(this, AlienNotFoundException.prototype)
+        Error.captureStackTrace(this, AlienNotFoundException)
+    }
+}
