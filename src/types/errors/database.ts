@@ -15,3 +15,11 @@ export class MessageNotFoundException extends APIError {
         Error.captureStackTrace(this, MessageNotFoundException)
     }
 }
+
+export class CommentNotFoundException extends APIError {
+    constructor() {
+        super(404, 620, 'comment not found')
+        Object.setPrototypeOf(this, CommentNotFoundException.prototype)
+        Error.captureStackTrace(this, CommentNotFoundException)
+    }
+}
