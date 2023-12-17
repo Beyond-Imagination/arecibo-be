@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import asyncify from 'express-asyncify'
 
 import { MessageModel } from '@/models/message'
+import { CommentModel } from '@/models/comment'
 
 const router = asyncify(express.Router({ mergeParams: true }))
 
@@ -21,6 +22,23 @@ router.get('/', async (req: Request, res: Response) => {
             page: result.page,
             limit: result.limit,
         },
+    })
+})
+
+router.get('/:messageId', async (req: Request, res: Response) => {
+    const [message, comments] = await Promise.all([MessageModel.findById(req.params.messageId), CommentModel.findByMessageId(req.params.messageId)])
+
+    res.status(200).json({
+        title: message.title,
+        content: message.content,
+        author: message.author.nickname,
+        comments: comments,
+        commentCount: message.commentCount,
+        likes: message.likes,
+        likeCount: message.likeCount,
+        isBlind: message.isBlind,
+        createdAt: message.createdAt,
+        updatedAt: message.updatedAt,
     })
 })
 

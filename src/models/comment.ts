@@ -49,7 +49,7 @@ export class Comment {
         }
     }
 
-    public static async findByMessageId(this: ReturnModelType<typeof Comment>, messageId: mongoose.Types.ObjectId): Promise<Comment[]> {
+    public static async findByMessageId(this: ReturnModelType<typeof Comment>, messageId: string): Promise<Comment[]> {
         return await this.find({ messageId: messageId, isNested: false }).populate('comments').exec()
     }
 
