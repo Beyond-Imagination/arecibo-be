@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
-import { MessageNotFoundException } from '@/types/errors/database'
+import { AlienNotFoundException } from '@/types/errors/database'
 
 export class Alien {
     public _id: mongoose.Types.ObjectId
@@ -34,11 +34,11 @@ export class Alien {
     }
 
     private static async findByFilter(this: ReturnModelType<typeof Alien>, filter: object): Promise<Alien> {
-        const message = await this.findOne(filter).exec()
-        if (message) {
-            return message
+        const alien = await this.findOne(filter).exec()
+        if (alien) {
+            return alien
         } else {
-            throw new MessageNotFoundException()
+            throw new AlienNotFoundException()
         }
     }
 
