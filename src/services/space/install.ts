@@ -25,7 +25,7 @@ async function setUIExtension(organization: space.IOrganizationSecret, installIn
 }
 
 async function requestRights(organization: space.IOrganizationSecret, installInfo: installInfo): Promise<void> {
-    const url = '${organization.serverUrl}/api/http/applications/clientId:${organization.clientId}/authorizations/authorized-rights/request-rights'
+    const url = `${organization.serverUrl}/api/http/applications/clientId:${organization.clientId}/authorizations/authorized-rights/request-rights`
     const body = JSON.stringify(installInfo.right)
     const response = await fetch(url, {
         method: 'PATCH',
