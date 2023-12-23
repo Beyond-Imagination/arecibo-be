@@ -5,7 +5,7 @@ const data: installInfo = {
     version: '0.1.0',
     uiExtension: {
         contextIdentifier: 'global',
-        extension: [
+        extensions: [
             {
                 className: 'TopLevelPageUiExtensionIn',
                 displayName: 'Arecibo',
@@ -15,7 +15,8 @@ const data: installInfo = {
         ],
     },
     right: {
-        codes: ['Profile.View'],
+        contextIdentifier: 'global',
+        rightCodes: ['Profile.View'],
     },
 }
 

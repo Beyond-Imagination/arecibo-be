@@ -1,6 +1,6 @@
 export interface uiExtension {
     contextIdentifier: string
-    extension: TopLevelPageUiExtensionIn[]
+    extensions: TopLevelPageUiExtensionIn[]
 }
 
 interface TopLevelPageUiExtensionIn {
@@ -11,5 +11,6 @@ interface TopLevelPageUiExtensionIn {
 }
 
 export interface right {
-    codes: string[]
+    contextIdentifier: string
+    rightCodes: string[]
 }
