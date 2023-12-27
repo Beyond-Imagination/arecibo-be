@@ -6,6 +6,7 @@ import { OrganizationModel } from '@/models/organization'
 import { sync } from '@/services/space'
 import { getInstallInfo } from '@/utils/version'
 import { verifySpaceRequest } from '@/middlewares/space'
+import { PlanetModel } from '@/models/planet'
 
 const router = asyncify(express.Router())
 
@@ -21,6 +22,10 @@ router.post('/install', async (req, res) => {
         serverUrl: body.serverUrl,
         admin: [body.userId],
         version: installInfo.version,
+    })
+    await PlanetModel.create({
+        title: body.serverUrl, // TODO: 실제 organization 이름 얻어서 추가
+        category: 'organization',
     })
     res.sendStatus(204)
 })
