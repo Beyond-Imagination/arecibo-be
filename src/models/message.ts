@@ -1,3 +1,4 @@
+import { DeleteResult } from 'mongodb'
 import mongoose, { PaginateOptions } from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 import { getModelForClass, prop, plugin, ReturnModelType } from '@typegoose/typegoose'
@@ -75,6 +76,10 @@ export class Message {
 
     public static async findBytId(this: ReturnModelType<typeof Message>, messageId: string): Promise<Message> {
         return this.findByFilter({ _id: messageId })
+    }
+
+    public static async deleteById(this: ReturnModelType<typeof Message>, messageId: string): Promise<DeleteResult> {
+        return this.deleteOne({ _id: messageId })
     }
 
     private static async findByFilter(this: ReturnModelType<typeof Message>, filter: object): Promise<Message> {

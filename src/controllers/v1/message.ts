@@ -1,8 +1,10 @@
 import express, { Request, Response } from 'express'
 import asyncify from 'express-asyncify'
+import { DeleteResult } from 'mongodb'
 
 import { MessageModel } from '@/models/message'
 import { CommentModel } from '@/models/comment'
+import { InvalidMessageId } from '@/types/errors/message'
 
 const router = asyncify(express.Router({ mergeParams: true }))
 
@@ -40,6 +42,14 @@ router.get('/:messageId', async (req: Request, res: Response) => {
         createdAt: message.createdAt,
         updatedAt: message.updatedAt,
     })
+})
+
+router.delete('/:messageId', async (req: Request, res: Response) => {
+    const deleteResult: DeleteResult = await MessageModel.deleteById(req.params.messageId)
+    if (deleteResult.deletedCount === 0) {
+        throw new InvalidMessageId()
+    }
+    res.sendStatus(204)
 })
 
 export default router
