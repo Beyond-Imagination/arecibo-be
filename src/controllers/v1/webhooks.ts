@@ -26,6 +26,7 @@ router.post('/install', async (req, res) => {
     await PlanetModel.create({
         title: body.serverUrl, // TODO: 실제 organization 이름 얻어서 추가
         category: 'organization',
+        clientId: body.clientId,
     })
     res.sendStatus(204)
 })

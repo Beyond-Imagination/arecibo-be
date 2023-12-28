@@ -31,3 +31,11 @@ export class AlienNotFoundException extends APIError {
         Error.captureStackTrace(this, AlienNotFoundException)
     }
 }
+
+export class PlanetNotFoundException extends APIError {
+    constructor() {
+        super(404, 640, 'planet not found')
+        Object.setPrototypeOf(this, PlanetNotFoundException.prototype)
+        Error.captureStackTrace(this, PlanetNotFoundException)
+    }
+}

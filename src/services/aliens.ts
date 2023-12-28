@@ -2,12 +2,16 @@ import jwt from 'jsonwebtoken'
 import { v4 } from 'uuid'
 
 import { Alien, AlienModel } from '@/models/alien'
+import { PlanetModel } from '@/models/planet'
+import { Organization } from '@/models/organization'
 
-export async function signUp(provider: string, oauthId: string): Promise<Alien> {
+export async function signUp(organization: Organization, provider: string, oauthId: string): Promise<Alien> {
+    const planet = await PlanetModel.findBytClientId(organization.clientId)
     // TODO nickname unique 처리 필요
     return await AlienModel.create({
         oauthProvider: provider,
         oauthId: oauthId,
+        subscribe: [planet._id],
         nickname: Math.random().toString(36).substring(2, 10),
     })
 }
