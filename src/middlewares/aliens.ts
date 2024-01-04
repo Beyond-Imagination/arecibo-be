@@ -7,7 +7,7 @@ import { alienJWTPayload } from '@/types'
 export async function verifyAlien(req: Request, res: Response, next: NextFunction) {
     const token = req.header('Authorization')
 
-    if (!token.startsWith('bearer ')) {
+    if (!token.startsWith('Bearer ')) {
         throw new Error('not bearer token')
     }
 

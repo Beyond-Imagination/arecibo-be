@@ -34,6 +34,10 @@ export class Planet {
             throw new PlanetNotFoundException()
         }
     }
+
+    public static async findByIdArray(this: ReturnModelType<typeof Planet>, ids: string[]): Promise<Planet[]> {
+        return this.find({ _id: { $in: ids } })
+    }
 }
 
 export const PlanetModel = getModelForClass(Planet)
