@@ -1,3 +1,4 @@
+import '@/config'
 import API from '@/api'
 import connect from '@/models/connector'
 ;(async () => {
