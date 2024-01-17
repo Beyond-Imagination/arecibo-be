@@ -14,7 +14,7 @@ export class Message {
     title: string
 
     @prop({ required: true })
-    planetId: string
+    planetId: mongoose.Types.ObjectId
 
     @prop({ required: true })
     content: string

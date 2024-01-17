@@ -5,6 +5,7 @@ import { DeleteResult } from 'mongodb'
 import { MessageModel } from '@/models/message'
 import { CommentModel } from '@/models/comment'
 import { InvalidMessageId } from '@/types/errors/message'
+import { messageLike } from '@/services/message'
 
 const router = asyncify(express.Router({ mergeParams: true }))
 
@@ -42,6 +43,26 @@ router.get('/:messageId', async (req: Request, res: Response) => {
         createdAt: message.createdAt,
         updatedAt: message.updatedAt,
     })
+})
+
+router.post('/:messageId/likes', async (req: Request, res: Response) => {
+    try {
+        const params = {
+            messageId: req.params.messageId,
+            planetId: req.params.planetId,
+            liker: req.body.liker,
+        }
+
+        const result = await messageLike(params)
+
+        if (result.error) {
+            res.status(400).json({ success: false, message: result.error })
+        } else {
+            res.status(200).json({ success: true, likeCount: result.likeCount })
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Internal server error' })
+    }
 })
 
 router.delete('/:messageId', async (req: Request, res: Response) => {
