@@ -47,7 +47,7 @@ const winstonOption = {
 const loggerMiddleware = expressWinston.logger({
     ...winstonOption,
     requestWhitelist: ['headers.origin', 'body', 'query'],
-    responseWhitelist: ['body'],
+    responseWhitelist: ['body', 'statusCode'],
     bodyBlacklist: ['password', 'clientSecret', 'token', 'jwt', 'jwtPayload'],
     headerBlacklist: ['authorization'],
     ignoreRoute: function (req, res) {
