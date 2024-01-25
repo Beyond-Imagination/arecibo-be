@@ -23,6 +23,9 @@ export class Comment {
     @prop({ type: mongoose.Types.ObjectId, ref: Comment })
     public comments: mongoose.Types.ObjectId[]
 
+    @prop({ ref: Comment })
+    public parentCommentId: mongoose.Types.ObjectId
+
     @prop({ default: false })
     public isNested: boolean
 
