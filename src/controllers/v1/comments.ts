@@ -4,6 +4,7 @@ import asyncify from 'express-asyncify'
 import { MessageModel } from '@/models/message'
 import { CommentModel } from '@/models/comment'
 import { verifyAlien } from '@/middlewares/aliens'
+import { AlienPermissionDeniedException } from '@/types/errors/alien'
 
 const router = asyncify(express.Router({ mergeParams: true }))
 
@@ -35,6 +36,19 @@ router.post('/:commentId', async (req: Request, res: Response) => {
     await CommentModel.updateOne({ _id: comment._id }, { $push: { comments: nestedComment } })
 
     res.sendStatus(204)
+})
+
+router.put('/:commentId', async (req: Request, res: Response) => {
+    const comment = await CommentModel.findById(req.params.commentId)
+    if (req.alien._id !== comment.author) {
+        throw new AlienPermissionDeniedException()
+    }
+
+    const update = {
+        text: req.params.text,
+        updatedAt: Date.now(),
+    }
+    await CommentModel.updateOne({ _id: comment._id }, update)
 })
 
 export default router
