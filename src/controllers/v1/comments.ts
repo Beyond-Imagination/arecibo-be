@@ -49,6 +49,8 @@ router.put('/:commentId', async (req: Request, res: Response) => {
         updatedAt: Date.now(),
     }
     await CommentModel.updateOne({ _id: comment._id }, update)
+
+    res.sendStatus(204)
 })
 
 export default router
