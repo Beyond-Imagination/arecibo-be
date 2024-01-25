@@ -29,10 +29,10 @@ export class Comment {
     @prop({ default: false })
     public isBlind: boolean
 
-    @prop()
+    @prop({ default: Date.now() })
     public createdAt: Date
 
-    @prop()
+    @prop({ default: Date.now() })
     public updatedAt: Date
 
     public toJSON(): object {
