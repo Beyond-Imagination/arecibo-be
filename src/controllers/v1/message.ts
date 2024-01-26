@@ -10,6 +10,8 @@ import { verifyAlien } from '@/middlewares/aliens'
 
 const router = asyncify(express.Router({ mergeParams: true }))
 
+router.use(verifyAlien)
+
 router.get('/', async (req: Request, res: Response) => {
     const sort = req.query.sort == 'likes' ? { likeCount: 1 } : { createdAt: -1 }
     const page = Number(req.query.page || 1)
@@ -29,6 +31,20 @@ router.get('/', async (req: Request, res: Response) => {
     })
 })
 
+router.post('/', async (req: Request, res: Response) => {
+    await MessageModel.create({
+        planetId: req.params.planetId,
+        title: req.body.title,
+        content: req.body.content,
+        author: {
+            // TODO change to alien id
+            nickname: req.alien.nickname,
+            organization: '',
+        },
+    })
+    res.sendStatus(204)
+})
+
 router.get('/:messageId', async (req: Request, res: Response) => {
     const [message, comments] = await Promise.all([MessageModel.findById(req.params.messageId), CommentModel.findByMessageId(req.params.messageId)])
 
@@ -46,7 +62,7 @@ router.get('/:messageId', async (req: Request, res: Response) => {
     })
 })
 
-router.post('/:messageId/likes', verifyAlien, async (req: Request, res: Response) => {
+router.post('/:messageId/likes', async (req: Request, res: Response) => {
     const params = {
         messageId: req.params.messageId,
         liker: req.alien._id,
