@@ -1,11 +1,12 @@
 import express, { Request, Response } from 'express'
 import asyncify from 'express-asyncify'
+import { DeleteResult } from 'mongodb'
 import { commentLike } from '@/services/comments'
 
 import { MessageModel } from '@/models/message'
 import { CommentModel } from '@/models/comment'
 import { verifyAlien } from '@/middlewares/aliens'
-import { AlienPermissionDeniedException } from '@/types/errors/alien'
+import { AlienPermissionDeniedException, HasNestedComment, InvalidCommentId } from '@/types/errors'
 
 const router = asyncify(express.Router({ mergeParams: true }))
 
@@ -65,6 +66,30 @@ router.put('/:commentId', async (req: Request, res: Response) => {
         updatedAt: Date.now(),
     }
     await CommentModel.updateOne({ _id: comment._id }, update)
+
+    res.sendStatus(204)
+})
+
+router.delete('/:commentId', async (req: Request, res: Response) => {
+    const comment = await CommentModel.findById(req.params.commentId)
+    if (req.alien._id !== comment.author) {
+        throw new AlienPermissionDeniedException()
+    }
+    // TODO: nested comment를 가진 comment 처리 방식 수정
+    if (comment.comments.length !== 0) {
+        throw new HasNestedComment()
+    }
+
+    // TODO: transaction 처리
+    if (comment.isNested) {
+        await CommentModel.updateOne({ _id: comment.parentCommentId }, { $pull: { comments: comment._id } })
+    } else {
+        await MessageModel.updateOne({ _id: comment.messageId }, { $inc: { commentCount: -1 } })
+    }
+    const deleteResult: DeleteResult = await CommentModel.deleteById(req.params.commentId)
+    if (deleteResult.deletedCount === 0) {
+        throw new InvalidCommentId()
+    }
 
     res.sendStatus(204)
 })

@@ -1,6 +1,8 @@
+import { DeleteResult } from 'mongodb'
 import mongoose from 'mongoose'
 import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
 import { CommentNotFoundException } from '@/types/errors/database'
+import { Alien } from './alien'
 
 class Comment {
     public _id: mongoose.Types.ObjectId
@@ -14,11 +16,8 @@ class Comment {
     @prop({ require: true })
     public text: string
 
-    @prop({ require: true })
-    public author: {
-        nickname: string
-        organization: string
-    }
+    @prop({ require: true, ref: Alien })
+    public author: mongoose.Types.ObjectId
 
     @prop({ type: mongoose.Types.ObjectId })
     public likes: mongoose.Types.ObjectId[]
@@ -65,6 +64,10 @@ class Comment {
 
     public static async findById(this: ReturnModelType<typeof Comment>, commentId: string): Promise<Comment> {
         return await this.findByFilter({ _id: commentId })
+    }
+
+    public static async deleteById(this: ReturnModelType<typeof Comment>, commentId: string): Promise<DeleteResult> {
+        return this.deleteOne({ _id: commentId })
     }
 
     private static async findByFilter(this: ReturnModelType<typeof Comment>, filter: object): Promise<Comment> {
