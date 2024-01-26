@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express'
 import asyncify from 'express-asyncify'
+import { commentLike } from '@/services/comments'
 
 import { MessageModel } from '@/models/message'
 import { CommentModel } from '@/models/comment'
@@ -9,6 +10,21 @@ import { AlienPermissionDeniedException } from '@/types/errors/alien'
 const router = asyncify(express.Router({ mergeParams: true }))
 
 router.use(verifyAlien)
+
+router.post('/:commentId/likes', async (req: Request, res: Response) => {
+    const params = {
+        commentId: req.params.commentId,
+        liker: req.alien._id,
+    }
+
+    const result = await commentLike(params)
+
+    if (result.error) {
+        res.status(400).json({ message: result.error })
+    } else {
+        res.status(200).json({ likeCount: result.likeCount })
+    }
+})
 
 router.post('/', async (req: Request, res: Response) => {
     // TODO: transaction 처리

@@ -2,23 +2,26 @@ import mongoose from 'mongoose'
 import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
 import { CommentNotFoundException } from '@/types/errors/database'
 
-export class Comment {
+class Comment {
     public _id: mongoose.Types.ObjectId
 
     @prop({ require: true })
     public messageId: mongoose.Types.ObjectId
 
     @prop({ require: true })
+    public planetId: mongoose.Types.ObjectId
+
+    @prop({ require: true })
     public text: string
 
     @prop({ require: true })
-    public author: mongoose.Types.ObjectId
+    public author: {
+        nickname: string
+        organization: string
+    }
 
     @prop({ type: mongoose.Types.ObjectId })
     public likes: mongoose.Types.ObjectId[]
-
-    @prop({ default: 0 })
-    public likeCount: number
 
     @prop({ type: mongoose.Types.ObjectId, ref: Comment })
     public comments: mongoose.Types.ObjectId[]
@@ -37,6 +40,10 @@ export class Comment {
 
     @prop({ default: Date.now() })
     public updatedAt: Date
+
+    public get likeCount(): number {
+        return this.likes.length
+    }
 
     public toJSON(): object {
         return {
@@ -70,4 +77,11 @@ export class Comment {
     }
 }
 
-export const CommentModel = getModelForClass(Comment)
+const CommentModel = getModelForClass(Comment, {
+    schemaOptions: {
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
+    },
+})
+
+export { CommentModel }

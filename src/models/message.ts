@@ -28,11 +28,8 @@ export class Message {
     @prop({ default: 0 })
     commentCount: number
 
-    @prop()
-    likes: string[]
-
-    @prop({ default: 0 })
-    likeCount: number
+    @prop({ type: mongoose.Types.ObjectId })
+    public likes: mongoose.Types.ObjectId[]
 
     @prop({ default: false })
     isBlind: boolean
@@ -42,6 +39,10 @@ export class Message {
 
     @prop()
     updatedAt: Date
+
+    public get likeCount(): number {
+        return this.likes.length
+    }
 
     public toJSON(): object {
         return {
@@ -74,12 +75,12 @@ export class Message {
         )
     }
 
-    public static async findBytId(this: ReturnModelType<typeof Message>, messageId: string): Promise<Message> {
-        return this.findByFilter({ _id: messageId })
+    public static async findById(this: ReturnModelType<typeof Message>, messageId: string): Promise<Message> {
+        return await this.findByFilter({ _id: messageId })
     }
 
     public static async deleteById(this: ReturnModelType<typeof Message>, messageId: string): Promise<DeleteResult> {
-        return this.deleteOne({ _id: messageId })
+        return await this.deleteOne({ _id: messageId })
     }
 
     private static async findByFilter(this: ReturnModelType<typeof Message>, filter: object): Promise<Message> {
@@ -92,4 +93,9 @@ export class Message {
     }
 }
 
-export const MessageModel = getModelForClass(Message)
+export const MessageModel = getModelForClass(Message, {
+    schemaOptions: {
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
+    },
+})
