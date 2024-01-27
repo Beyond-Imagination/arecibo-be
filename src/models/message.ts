@@ -2,10 +2,12 @@ import { DeleteResult } from 'mongodb'
 import mongoose, { PaginateOptions } from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 import { getModelForClass, prop, plugin, ReturnModelType } from '@typegoose/typegoose'
+import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
+
 import { MessageNotFoundException } from '@/types/errors/database'
 
 @plugin(mongoosePaginate)
-export class Message {
+export class Message extends TimeStamps {
     static paginate: mongoose.PaginateModel<typeof Message>['paginate']
 
     public _id: mongoose.Types.ObjectId
@@ -33,12 +35,6 @@ export class Message {
 
     @prop({ default: false })
     isBlind: boolean
-
-    @prop()
-    createdAt: Date
-
-    @prop()
-    updatedAt: Date
 
     public get likeCount(): number {
         return this.likes.length
