@@ -18,8 +18,14 @@ router.get('/', async (req: Request, res: Response) => {
     const limit = Number(req.query.size || 15)
 
     const result = await MessageModel.findByPlanetId(req.params.planetId, page, limit, sort)
+
+    const messages = result.docs.map((message) => ({
+        ...message.toJSON(),
+        isLiked: message.likes.includes(req.alien._id),
+    }))
+
     res.status(200).json({
-        messages: result.docs,
+        messages: messages,
         page: {
             totalDocs: result.totalDocs,
             totalPages: result.totalPages,
@@ -48,13 +54,26 @@ router.post('/', async (req: Request, res: Response) => {
 router.get('/:messageId', async (req: Request, res: Response) => {
     const [message, comments] = await Promise.all([MessageModel.findById(req.params.messageId), CommentModel.findByMessageId(req.params.messageId)])
 
+    const addIsLikedToComments = (comments) => {
+        return comments.map((comment) => {
+            const isLiked = comment.likes.includes(req.alien._id)
+            const nestedComments = addIsLikedToComments(comment.comments)
+            return {
+                ...comment.toJSON(),
+                isLiked: isLiked,
+                comments: nestedComments,
+            }
+        })
+    }
+    const commentsWithIsLIked = addIsLikedToComments(comments)
+
     res.status(200).json({
         title: message.title,
         content: message.content,
         author: message.author.nickname,
-        comments: comments,
+        comments: commentsWithIsLIked,
         commentCount: message.commentCount,
-        likes: message.likes,
+        isLiked: message.likes.includes(req.alien._id),
         likeCount: message.likeCount,
         isBlind: message.isBlind,
         createdAt: message.createdAt,

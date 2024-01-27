@@ -49,7 +49,6 @@ class Comment {
             _id: this._id,
             text: this.text,
             author: this.author,
-            likes: this.likes,
             likeCount: this.likeCount,
             comments: this.comments,
             isBlind: this.isBlind,
