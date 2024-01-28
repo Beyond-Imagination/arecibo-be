@@ -85,7 +85,7 @@ async function verifyUser(req: Request, res: Response, next: NextFunction) {
 
 export async function setAlien(req: Request, res: Response, next: NextFunction) {
     try {
-        req.alien = await AlienModel.findBytId('space', req.user.id)
+        req.alien = await AlienModel.findById('space', req.user.id)
         next()
     } catch (e) {
         if (e instanceof errors.AlienNotFoundException) {

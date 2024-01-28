@@ -4,6 +4,7 @@ import { DeleteResult } from 'mongodb'
 
 import { MessageModel } from '@/models/message'
 import { CommentModel } from '@/models/comment'
+import { AlienModel } from '@/models/alien'
 import { InvalidMessageId } from '@/types/errors/message'
 import { messageLike } from '@/services/message'
 import { verifyAlien } from '@/middlewares/aliens'
@@ -60,7 +61,7 @@ router.put('/:messageId', async (req: Request, res: Response) => {
 
 router.get('/:messageId', async (req: Request, res: Response) => {
     const [message, comments] = await Promise.all([MessageModel.findById(req.params.messageId), CommentModel.findByMessageId(req.params.messageId)])
-
+    const author = await AlienModel.findById(message.author)
     const addIsLikedToComments = (comments) => {
         return comments.map((comment) => {
             const isLiked = comment.likes.includes(req.alien._id)
@@ -77,7 +78,10 @@ router.get('/:messageId', async (req: Request, res: Response) => {
     res.status(200).json({
         title: message.title,
         content: message.content,
-        author: message.author.nickname,
+        author: {
+            nickname: author.nickname,
+            orgainzation: author.organization,
+        },
         comments: commentsWithIsLIked,
         commentCount: message.commentCount,
         isLiked: message.likes.includes(req.alien._id),

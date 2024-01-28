@@ -1,10 +1,11 @@
 import { DeleteResult } from 'mongodb'
 import mongoose from 'mongoose'
 import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
+import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 import { CommentNotFoundException } from '@/types/errors/database'
 import { Alien } from './alien'
 
-class Comment {
+class Comment extends TimeStamps {
     public _id: mongoose.Types.ObjectId
 
     @prop({ require: true })
@@ -34,12 +35,6 @@ class Comment {
     @prop({ default: false })
     public isBlind: boolean
 
-    @prop({ default: Date.now() })
-    public createdAt: Date
-
-    @prop({ default: Date.now() })
-    public updatedAt: Date
-
     public get likeCount(): number {
         return this.likes.length
     }
@@ -58,7 +53,7 @@ class Comment {
     }
 
     public static async findByMessageId(this: ReturnModelType<typeof Comment>, messageId: string): Promise<Comment[]> {
-        return await this.find({ messageId: messageId, isNested: false }).populate('comments').exec()
+        return await this.find({ messageId: messageId, isNested: false }).populate('comments').populate('author', 'nickname organization -_id').exec()
     }
 
     public static async findById(this: ReturnModelType<typeof Comment>, commentId: string): Promise<Comment> {

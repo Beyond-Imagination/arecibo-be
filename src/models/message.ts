@@ -5,6 +5,7 @@ import { getModelForClass, prop, plugin, ReturnModelType } from '@typegoose/type
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 
 import { MessageNotFoundException } from '@/types/errors/database'
+import { Alien } from './alien'
 
 @plugin(mongoosePaginate)
 export class Message extends TimeStamps {
@@ -21,11 +22,8 @@ export class Message extends TimeStamps {
     @prop({ required: true })
     content: string
 
-    @prop({ required: true })
-    author: {
-        nickname: string
-        organization: string
-    }
+    @prop({ required: true, ref: Alien })
+    author: mongoose.Types.ObjectId
 
     @prop({ default: 0 })
     commentCount: number
@@ -67,6 +65,10 @@ export class Message extends TimeStamps {
                 sort: sort,
                 page: page,
                 limit: limit,
+                populate: {
+                    path: 'author',
+                    select: 'nickname organization -_id',
+                },
             },
         )
     }

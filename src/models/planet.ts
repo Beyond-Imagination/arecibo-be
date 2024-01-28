@@ -22,7 +22,7 @@ export class Planet {
     @prop()
     public updatedAt: Date
 
-    public static async findBytClientId(this: ReturnModelType<typeof Planet>, clientId: string): Promise<Planet> {
+    public static async findByClientId(this: ReturnModelType<typeof Planet>, clientId: string): Promise<Planet> {
         return this.findByFilter({ clientId: clientId })
     }
 
