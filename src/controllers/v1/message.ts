@@ -51,6 +51,13 @@ router.post('/', async (req: Request, res: Response) => {
     res.sendStatus(204)
 })
 
+router.put('/:messageId', async (req: Request, res: Response) => {
+    // TODO: alien id 같은지 확인
+    await MessageModel.updateOne({ _id: req.params.messageId }, { title: req.body.title, content: req.body.content })
+
+    res.sendStatus(204)
+})
+
 router.get('/:messageId', async (req: Request, res: Response) => {
     const [message, comments] = await Promise.all([MessageModel.findById(req.params.messageId), CommentModel.findByMessageId(req.params.messageId)])
 
