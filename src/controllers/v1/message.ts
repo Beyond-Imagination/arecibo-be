@@ -43,11 +43,7 @@ router.post('/', async (req: Request, res: Response) => {
         planetId: req.params.planetId,
         title: req.body.title,
         content: req.body.content,
-        author: {
-            // TODO change to alien id
-            nickname: req.alien.nickname,
-            organization: '',
-        },
+        author: req.alien._id,
     })
     res.sendStatus(204)
 })
