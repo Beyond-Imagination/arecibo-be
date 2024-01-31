@@ -22,7 +22,7 @@ router.get('/', async (req: Request, res: Response) => {
 
     const messages = result.docs.map((message) => ({
         ...message.toJSON(),
-        isLiked: message.likes.includes(req.alien._id),
+        isLiked: message['likes'].includes(req.alien._id),
     }))
 
     res.status(200).json({
@@ -80,7 +80,7 @@ router.get('/:messageId', async (req: Request, res: Response) => {
             }
         })
     }
-    const commentsWithIsLIked = addIsLikedToComments(comments)
+    const commentsWithIsLiked = addIsLikedToComments(comments)
 
     res.status(200).json({
         title: message.title,
@@ -89,7 +89,7 @@ router.get('/:messageId', async (req: Request, res: Response) => {
             nickname: author.nickname,
             organization: author.organization,
         },
-        comments: commentsWithIsLIked,
+        comments: commentsWithIsLiked,
         commentCount: message.commentCount,
         isLiked: message.likes.includes(req.alien._id),
         likeCount: message.likeCount,
