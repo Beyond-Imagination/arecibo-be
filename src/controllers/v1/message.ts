@@ -83,6 +83,7 @@ router.get('/:messageId', async (req: Request, res: Response) => {
     const commentsWithIsLiked = addIsLikedToComments(comments)
 
     res.status(200).json({
+        _id: message._id,
         title: message.title,
         content: message.content,
         author: {
