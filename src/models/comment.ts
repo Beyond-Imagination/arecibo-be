@@ -42,10 +42,14 @@ class Comment extends TimeStamps {
     public toJSON(): object {
         return {
             _id: this._id,
+            planetId: this.planetId,
+            messageId: this.messageId,
+            parentCommentId: this.parentCommentId,
             text: this.text,
             author: this.author,
             likeCount: this.likeCount,
             comments: this.comments,
+            isNested: this.isNested,
             isBlind: this.isBlind,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,

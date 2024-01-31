@@ -31,6 +31,7 @@ router.post('/', async (req: Request, res: Response) => {
     // TODO: transaction 처리
     const message = await MessageModel.findById(req.params.messageId)
     await CommentModel.create({
+        planetId: message.planetId,
         messageId: message._id,
         text: req.body.text,
         author: req.alien._id,
@@ -44,6 +45,7 @@ router.post('/:commentId', async (req: Request, res: Response) => {
     // TODO: transaction 처리
     const comment = await CommentModel.findById(req.params.commentId)
     const nestedComment = await CommentModel.create({
+        planetId: comment.planetId,
         messageId: comment.messageId,
         parentCommentId: comment._id,
         text: req.body.text,
