@@ -57,7 +57,16 @@ class Comment extends TimeStamps {
     }
 
     public static async findByMessageId(this: ReturnModelType<typeof Comment>, messageId: string): Promise<Comment[]> {
-        return await this.find({ messageId: messageId, isNested: false }).populate('comments').populate('author', 'nickname organization -_id').exec()
+        return await this.find({ messageId: messageId, isNested: false })
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'author',
+                    select: 'nickname organization -_id',
+                },
+            })
+            .populate('author', 'nickname organization -_id')
+            .exec()
     }
 
     public static async findById(this: ReturnModelType<typeof Comment>, commentId: string): Promise<Comment> {
