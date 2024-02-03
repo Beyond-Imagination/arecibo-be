@@ -31,8 +31,12 @@ export class Alien extends TimeStamps {
     @prop()
     public status: number
 
-    public static async findById(this: ReturnModelType<typeof Alien>, oauthProvider: string, oauthId: string): Promise<Alien> {
+    public static async findByOauth(this: ReturnModelType<typeof Alien>, oauthProvider: string, oauthId: string): Promise<Alien> {
         return this.findByFilter({ oauthProvider, oauthId })
+    }
+
+    public static async findById(this: ReturnModelType<typeof Alien>, alienId: mongoose.Types.ObjectId): Promise<Alien> {
+        return this.findByFilter({ _id: alienId })
     }
 
     private static async findByFilter(this: ReturnModelType<typeof Alien>, filter: object): Promise<Alien> {

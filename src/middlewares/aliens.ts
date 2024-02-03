@@ -14,7 +14,7 @@ export async function verifyAlien(req: Request, res: Response, next: NextFunctio
     const jsonwebtoken = token.split(' ')[1]
     const payload = verify(jsonwebtoken, 'secret-수정필요') as alienJWTPayload
 
-    req.alien = await AlienModel.findById(payload.provider, payload.id)
+    req.alien = await AlienModel.findByOauth(payload.provider, payload.id)
 
     next()
 }
