@@ -8,6 +8,7 @@ import { AlienModel } from '@/models/alien'
 import { InvalidMessageId } from '@/types/errors/message'
 import { messageLike } from '@/services/message'
 import { verifyAlien } from '@/middlewares/aliens'
+import { verifyMessageAuthor } from '@/middlewares/message'
 
 const router = asyncify(express.Router({ mergeParams: true }))
 
@@ -23,6 +24,7 @@ router.get('/', async (req: Request, res: Response) => {
     const messages = result.docs.map((message) => ({
         ...message.toJSON(),
         isLiked: message['likes'].includes(req.alien._id),
+        isAuthor: req.alien._id.equals(message['author']._id),
     }))
 
     res.status(200).json({
@@ -81,7 +83,6 @@ router.get('/:messageId', async (req: Request, res: Response) => {
         })
     }
     const commentsWithIsLiked = addIsLikedToComments(comments)
-
     res.status(200).json({
         _id: message._id,
         title: message.title,
@@ -94,6 +95,7 @@ router.get('/:messageId', async (req: Request, res: Response) => {
         commentCount: message.commentCount,
         isLiked: message.likes.includes(req.alien._id),
         likeCount: message.likeCount,
+        isAuthor: req.alien._id.equals(message.author),
         isBlind: message.isBlind,
         createdAt: message.createdAt,
         updatedAt: message.updatedAt,
@@ -115,8 +117,12 @@ router.post('/:messageId/likes', async (req: Request, res: Response) => {
     }
 })
 
-router.delete('/:messageId', async (req: Request, res: Response) => {
-    const deleteResult: DeleteResult = await MessageModel.deleteById(req.params.messageId)
+router.delete('/:messageId', verifyMessageAuthor, async (req: Request, res: Response) => {
+    if (req.message.commentCount) {
+        await CommentModel.deleteCommentsByMessageId(req.message._id)
+    }
+
+    const deleteResult: DeleteResult = await MessageModel.deleteById(req.message._id)
     if (deleteResult.deletedCount === 0) {
         throw new InvalidMessageId()
     }

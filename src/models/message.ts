@@ -67,7 +67,7 @@ export class Message extends TimeStamps {
                 limit: limit,
                 populate: {
                     path: 'author',
-                    select: 'nickname organization -_id',
+                    select: 'nickname organization',
                 },
             },
         )
@@ -77,8 +77,8 @@ export class Message extends TimeStamps {
         return await this.findByFilter({ _id: messageId })
     }
 
-    public static async deleteById(this: ReturnModelType<typeof Message>, messageId: string): Promise<DeleteResult> {
-        return await this.deleteOne({ _id: messageId })
+    public static async deleteById(this: ReturnModelType<typeof Message>, messageId: mongoose.Types.ObjectId): Promise<DeleteResult> {
+        return this.deleteOne({ _id: messageId })
     }
 
     private static async findByFilter(this: ReturnModelType<typeof Message>, filter: object): Promise<Message> {

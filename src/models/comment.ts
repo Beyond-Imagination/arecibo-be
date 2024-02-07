@@ -77,6 +77,10 @@ class Comment extends TimeStamps {
         return this.deleteOne({ _id: commentId })
     }
 
+    public static async deleteCommentsByMessageId(this: ReturnModelType<typeof Comment>, messageId: mongoose.Types.ObjectId): Promise<DeleteResult> {
+        return this.deleteMany({ messageId: messageId })
+    }
+
     private static async findByFilter(this: ReturnModelType<typeof Comment>, filter: object): Promise<Comment> {
         const comment = await this.findOne(filter).exec()
         if (comment) {
