@@ -58,7 +58,7 @@ router.put('/:messageId', async (req: Request, res: Response) => {
 })
 
 router.get('/:messageId', async (req: Request, res: Response) => {
-    const [message, comments] = await Promise.all([MessageModel.findById(req.params.messageId), CommentModel.findByMessageId(req.params.messageId)])
+    const message = await MessageModel.findById(req.params.messageId)
 
     // TODO author 가 없는 경우 nickname 과 organization 처리 방향 결정
     let author = {
@@ -70,19 +70,6 @@ router.get('/:messageId', async (req: Request, res: Response) => {
     } catch (e) {
         // TODO author 없는 경우 이외의 다른 에러 처리
     }
-
-    const addIsLikedToComments = (comments) => {
-        return comments.map((comment) => {
-            const isLiked = comment.likes.includes(req.alien._id)
-            const nestedComments = addIsLikedToComments(comment.comments)
-            return {
-                ...comment.toJSON(),
-                isLiked: isLiked,
-                comments: nestedComments,
-            }
-        })
-    }
-    const commentsWithIsLiked = addIsLikedToComments(comments)
     res.status(200).json({
         _id: message._id,
         title: message.title,
@@ -91,7 +78,6 @@ router.get('/:messageId', async (req: Request, res: Response) => {
             nickname: author.nickname,
             organization: author.organization,
         },
-        comments: commentsWithIsLiked,
         commentCount: message.commentCount,
         isLiked: message.likes.includes(req.alien._id),
         likeCount: message.likeCount,

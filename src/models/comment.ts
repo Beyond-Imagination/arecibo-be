@@ -1,11 +1,16 @@
 import { DeleteResult } from 'mongodb'
-import mongoose from 'mongoose'
-import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
+import mongoose, { PaginateOptions } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
+import { getModelForClass, prop, plugin, ReturnModelType } from '@typegoose/typegoose'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
+
 import { CommentNotFoundException } from '@/types/errors/database'
 import { Alien } from './alien'
 
+@plugin(mongoosePaginate)
 class Comment extends TimeStamps {
+    static paginate: mongoose.PaginateModel<typeof Comment>['paginate']
+
     public _id: mongoose.Types.ObjectId
 
     @prop({ require: true })
@@ -56,17 +61,33 @@ class Comment extends TimeStamps {
         }
     }
 
-    public static async findByMessageId(this: ReturnModelType<typeof Comment>, messageId: string): Promise<Comment[]> {
-        return await this.find({ messageId: messageId, isNested: false })
-            .populate({
-                path: 'comments',
-                populate: {
-                    path: 'author',
-                    select: 'nickname organization -_id',
-                },
-            })
-            .populate('author', 'nickname organization -_id')
-            .exec()
+    public static async findByMessageId(
+        this: ReturnModelType<typeof Comment>,
+        messageId: string,
+        page: number,
+        limit: number,
+    ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<typeof Comment, object, PaginateOptions>>> {
+        return await this.paginate(
+            { messageId: messageId, isNested: false },
+            {
+                sort: { createdAt: -1 },
+                page: page,
+                limit: limit,
+                populate: [
+                    {
+                        path: 'author',
+                        select: 'nickname organization',
+                    },
+                    {
+                        path: 'comments',
+                        populate: {
+                            path: 'author',
+                            select: 'nickname organization',
+                        },
+                    },
+                ],
+            },
+        )
     }
 
     public static async findById(this: ReturnModelType<typeof Comment>, commentId: string): Promise<Comment> {

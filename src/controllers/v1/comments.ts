@@ -12,19 +12,38 @@ const router = asyncify(express.Router({ mergeParams: true }))
 
 router.use(verifyAlien)
 
-router.post('/:commentId/likes', async (req: Request, res: Response) => {
-    const params = {
-        commentId: req.params.commentId,
-        liker: req.alien._id,
-    }
+router.get('/', async (req: Request, res: Response) => {
+    const page = Number(req.query.page || 1)
+    const limit = Number(req.query.size || 10)
 
-    const result = await commentLike(params)
+    const result = await CommentModel.findByMessageId(req.params.messageId, page, limit)
 
-    if (result.error) {
-        res.status(400).json({ message: result.error })
-    } else {
-        res.status(200).json({ likeCount: result.likeCount })
+    const addFieldsToComments = (comments) => {
+        return comments.map((comment) => {
+            const isLiked = comment.likes.includes(req.alien._id)
+            const isAuthor = comment.author._id.equals(req.alien._id)
+            const nestedComments = addFieldsToComments(comment.comments)
+            return {
+                ...comment.toJSON(),
+                isLiked: isLiked,
+                isAuthor: isAuthor,
+                comments: nestedComments,
+            }
+        })
     }
+    const comments = await addFieldsToComments(result.docs)
+
+    res.status(200).json({
+        comments: comments,
+        page: {
+            totalDocs: result.totalDocs,
+            totalPages: result.totalPages,
+            hasNextPage: result.hasNextPage,
+            hasPrevPage: result.hasPrevPage,
+            page: result.page,
+            limit: result.limit,
+        },
+    })
 })
 
 router.post('/', async (req: Request, res: Response) => {
@@ -94,6 +113,21 @@ router.delete('/:commentId', async (req: Request, res: Response) => {
     }
 
     res.sendStatus(204)
+})
+
+router.post('/:commentId/likes', async (req: Request, res: Response) => {
+    const params = {
+        commentId: req.params.commentId,
+        liker: req.alien._id,
+    }
+
+    const result = await commentLike(params)
+
+    if (result.error) {
+        res.status(400).json({ message: result.error })
+    } else {
+        res.status(200).json({ likeCount: result.likeCount })
+    }
 })
 
 export default router
