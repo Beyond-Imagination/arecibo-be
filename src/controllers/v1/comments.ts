@@ -6,7 +6,8 @@ import { commentLike } from '@/services/comments'
 import { MessageModel } from '@/models/message'
 import { CommentModel } from '@/models/comment'
 import { verifyAlien } from '@/middlewares/aliens'
-import { AlienPermissionDeniedException, HasNestedComment, InvalidCommentId } from '@/types/errors'
+import { HasNestedComment, InvalidCommentId } from '@/types/errors'
+import { verifyCommentAuthor } from '@/middlewares/comment'
 
 const router = asyncify(express.Router({ mergeParams: true }))
 
@@ -76,36 +77,27 @@ router.post('/:commentId', async (req: Request, res: Response) => {
     res.sendStatus(204)
 })
 
-router.put('/:commentId', async (req: Request, res: Response) => {
-    const comment = await CommentModel.findById(req.params.commentId)
-    if (req.alien._id !== comment.author) {
-        throw new AlienPermissionDeniedException()
-    }
-
+router.put('/:commentId', verifyCommentAuthor, async (req: Request, res: Response) => {
     const update = {
         text: req.params.text,
         updatedAt: Date.now(),
     }
-    await CommentModel.updateOne({ _id: comment._id }, update)
+    await CommentModel.updateOne({ _id: req.comment._id }, update)
 
     res.sendStatus(204)
 })
 
-router.delete('/:commentId', async (req: Request, res: Response) => {
-    const comment = await CommentModel.findById(req.params.commentId)
-    if (req.alien._id !== comment.author) {
-        throw new AlienPermissionDeniedException()
-    }
+router.delete('/:commentId', verifyCommentAuthor, async (req: Request, res: Response) => {
     // TODO: nested comment를 가진 comment 처리 방식 수정
-    if (comment.comments.length !== 0) {
+    if (req.comment.comments.length !== 0) {
         throw new HasNestedComment()
     }
 
     // TODO: transaction 처리
-    if (comment.isNested) {
-        await CommentModel.updateOne({ _id: comment.parentCommentId }, { $pull: { comments: comment._id } })
+    if (req.comment.isNested) {
+        await CommentModel.updateOne({ _id: req.comment.parentCommentId }, { $pull: { comments: req.comment._id } })
     } else {
-        await MessageModel.updateOne({ _id: comment.messageId }, { $inc: { commentCount: -1 } })
+        await MessageModel.updateOne({ _id: req.comment.messageId }, { $inc: { commentCount: -1 } })
     }
     const deleteResult: DeleteResult = await CommentModel.deleteById(req.params.commentId)
     if (deleteResult.deletedCount === 0) {

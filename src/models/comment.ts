@@ -8,7 +8,7 @@ import { CommentNotFoundException } from '@/types/errors/database'
 import { Alien } from './alien'
 
 @plugin(mongoosePaginate)
-class Comment extends TimeStamps {
+export class Comment extends TimeStamps {
     static paginate: mongoose.PaginateModel<typeof Comment>['paginate']
 
     public _id: mongoose.Types.ObjectId

@@ -2,6 +2,7 @@ import { IOrganizationSecret, Profile } from '@/types/space'
 import { Organization } from '@/models/organization'
 import { Alien } from '@/models/alien'
 import { Message } from '@/models/message'
+import { Comment } from '@/models/comment'
 
 declare global {
     namespace Express {
@@ -14,6 +15,7 @@ declare global {
             user: Profile
             alien: Alien
             message: Message
+            comment: Comment
         }
         interface Response {
             meta: {
