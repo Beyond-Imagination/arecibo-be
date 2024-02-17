@@ -79,10 +79,9 @@ router.post('/:commentId', async (req: Request, res: Response) => {
 
 router.put('/:commentId', verifyCommentAuthor, async (req: Request, res: Response) => {
     const update = {
-        text: req.params.text,
-        updatedAt: Date.now(),
+        text: req.body.text,
     }
-    await CommentModel.updateOne({ _id: req.comment._id }, update)
+    await CommentModel.updateOne({ _id: req.params.commentId }, update)
 
     res.sendStatus(204)
 })
