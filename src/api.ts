@@ -38,6 +38,7 @@ export default class API {
     }
 
     setController() {
+        this.app.use('/v1/health', controllers.v1.health)
         this.app.use('/v1/webhooks', controllers.v1.webhooks)
         this.app.use('/v1/aliens', controllers.v1.aliens)
         this.app.use('/v1/planets', controllers.v1.planets)
