@@ -7,3 +7,11 @@ export class AlienPermissionDeniedException extends APIError {
         Error.captureStackTrace(this, AlienPermissionDeniedException)
     }
 }
+
+export class NicknameUpdateNotAllowed extends APIError {
+    constructor() {
+        super(403, 633, 'nickname update is not allowed')
+        Object.setPrototypeOf(this, NicknameUpdateNotAllowed)
+        Error.captureStackTrace(this, NicknameUpdateNotAllowed)
+    }
+}

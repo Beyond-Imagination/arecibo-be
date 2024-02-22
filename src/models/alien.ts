@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
-import { AlienNotFoundException } from '@/types/errors/database'
+import { AlienNotFoundException, NicknameUpdateNotAllowed } from '@/types/errors'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 import { Organization } from './organization'
 
@@ -26,7 +26,7 @@ export class Alien extends TimeStamps {
     public subscribe: string[]
 
     @prop()
-    public lasetNicknameUpdatedTime: Date
+    public lastNicknameUpdatedTime: Date
 
     @prop()
     public status: number
@@ -39,6 +39,15 @@ export class Alien extends TimeStamps {
         return this.findByFilter({ _id: alienId })
     }
 
+    public static async updateNickname(this: ReturnModelType<typeof Alien>, alienId: mongoose.Types.ObjectId, nickname: string) {
+        const alien = await this.findById(alienId)
+        if (!alien.lastNicknameUpdatedTime || Date.now() - alien.lastNicknameUpdatedTime.getTime() >= 1000 * 60 * 60) {
+            await this.updateOne({ _id: alienId }, { nickname: nickname, lastNicknameUpdatedTime: new Date() })
+        } else {
+            throw new NicknameUpdateNotAllowed()
+        }
+    }
+
     private static async findByFilter(this: ReturnModelType<typeof Alien>, filter: object): Promise<Alien> {
         const alien = await this.findOne(filter).exec()
         if (alien) {
@@ -47,8 +56,6 @@ export class Alien extends TimeStamps {
             throw new AlienNotFoundException()
         }
     }
-
-    // todo: add function updateNickname
 }
 
 export const AlienModel = getModelForClass(Alien)
