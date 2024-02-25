@@ -4,6 +4,7 @@ import { getModelForClass, index, prop, ReturnModelType } from '@typegoose/typeg
 import { PlanetNotFoundException } from '@/types/errors'
 
 @index({ clientId: 1 })
+@index({ default: 1 })
 export class Planet {
     public _id: mongoose.Types.ObjectId
 
@@ -15,6 +16,9 @@ export class Planet {
 
     @prop()
     public clientId: string
+
+    @prop({ default: false })
+    public default: boolean
 
     @prop()
     public createdAt: Date
@@ -33,6 +37,11 @@ export class Planet {
         } else {
             throw new PlanetNotFoundException()
         }
+    }
+
+    // TODO: 캐싱하기
+    public static async findDefault(this: ReturnModelType<typeof Planet>): Promise<Planet[]> {
+        return this.find({ default: true })
     }
 
     public static async findByIdArray(this: ReturnModelType<typeof Planet>, ids: string[]): Promise<Planet[]> {
