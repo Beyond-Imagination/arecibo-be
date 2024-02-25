@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
-import { AlienNotFoundException, NicknameUpdateNotAllowed } from '@/types/errors'
+import { AlienNotFoundException, NicknameDuplicatedError } from '@/types/errors'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 import { Organization } from './organization'
 
@@ -40,11 +40,14 @@ export class Alien extends TimeStamps {
     }
 
     public static async updateNickname(this: ReturnModelType<typeof Alien>, alienId: mongoose.Types.ObjectId, nickname: string) {
-        const alien = await this.findById(alienId)
-        if (!alien.lastNicknameUpdatedTime || Date.now() - alien.lastNicknameUpdatedTime.getTime() >= 1000 * 60 * 60) {
+        try {
             await this.updateOne({ _id: alienId }, { nickname: nickname, lastNicknameUpdatedTime: new Date() })
-        } else {
-            throw new NicknameUpdateNotAllowed()
+        } catch (error) {
+            if (error.code === 11000) {
+                throw new NicknameDuplicatedError()
+            } else {
+                throw error
+            }
         }
     }
 

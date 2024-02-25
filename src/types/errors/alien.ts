@@ -11,7 +11,15 @@ export class AlienPermissionDeniedException extends APIError {
 export class NicknameUpdateNotAllowed extends APIError {
     constructor() {
         super(403, 633, 'nickname update is not allowed')
-        Object.setPrototypeOf(this, NicknameUpdateNotAllowed)
+        Object.setPrototypeOf(this, NicknameUpdateNotAllowed.prototype)
+        Error.captureStackTrace(this, NicknameUpdateNotAllowed)
+    }
+}
+
+export class NicknameDuplicatedError extends APIError {
+    constructor() {
+        super(409, 634, 'nickname is duplicated')
+        Object.setPrototypeOf(this, NicknameUpdateNotAllowed.prototype)
         Error.captureStackTrace(this, NicknameUpdateNotAllowed)
     }
 }

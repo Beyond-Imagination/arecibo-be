@@ -5,6 +5,7 @@ import { verifySpaceUserRequest } from '@/middlewares/space'
 import { signIn, signUp } from '@/services'
 import { verifyAlien } from '@/middlewares/aliens'
 import { AlienModel } from '@/models/alien'
+import { NicknameUpdateNotAllowed } from '@/types/errors'
 
 const router = asyncify(express.Router())
 
@@ -17,7 +18,11 @@ router.post('/login/space', verifySpaceUserRequest, async (req: Request, res: Re
 })
 
 router.put('/nickname', verifyAlien, async (req: Request, res: Response) => {
-    await AlienModel.updateNickname(req.alien._id, req.body.nickname)
+    if (!req.alien.lastNicknameUpdatedTime || Date.now() - req.alien.lastNicknameUpdatedTime.getTime() >= 1000 * 60 * 60) {
+        await AlienModel.updateNickname(req.alien._id, req.body.nickname)
+    } else {
+        throw new NicknameUpdateNotAllowed()
+    }
     res.sendStatus(204)
 })
 
