@@ -17,6 +17,13 @@ router.post('/login/space', verifySpaceUserRequest, async (req: Request, res: Re
     res.status(200).json({ jwt: token, nickname: req.alien.nickname })
 })
 
+router.get('/detail', verifyAlien, async (req: Request, res: Response) => {
+    res.status(200).json({
+        nickname: req.alien.nickname,
+        lastNicknameUpdateTime: req.alien.lastNicknameUpdatedTime,
+    })
+})
+
 router.put('/nickname', verifyAlien, async (req: Request, res: Response) => {
     if (!req.alien.lastNicknameUpdatedTime || Date.now() - req.alien.lastNicknameUpdatedTime.getTime() >= 1000 * 60 * 60) {
         await AlienModel.updateNickname(req.alien._id, req.body.nickname)
