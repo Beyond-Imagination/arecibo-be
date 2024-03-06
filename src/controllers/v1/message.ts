@@ -50,9 +50,8 @@ router.post('/', async (req: Request, res: Response) => {
     res.sendStatus(204)
 })
 
-router.put('/:messageId', async (req: Request, res: Response) => {
-    // TODO: alien id 같은지 확인
-    await MessageModel.updateOne({ _id: req.params.messageId }, { title: req.body.title, content: req.body.content })
+router.put('/:messageId', verifyMessageAuthor, async (req: Request, res: Response) => {
+    await MessageModel.updateOne({ _id: req.message._id }, { title: req.body.title, content: req.body.content })
 
     res.sendStatus(204)
 })
