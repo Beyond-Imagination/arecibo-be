@@ -14,7 +14,7 @@ router.post('/login/space', verifySpaceUserRequest, async (req: Request, res: Re
         req.alien = await signUp(req.organization, req.provider, req.user.id)
     }
     const token = await signIn(req.provider, req.alien)
-    res.status(200).json({ jwt: token, nickname: req.alien.nickname })
+    res.status(200).json({ jwt: token })
 })
 
 router.get('/detail', verifyAlien, async (req: Request, res: Response) => {
