@@ -4,7 +4,6 @@ import { DeleteResult } from 'mongodb'
 
 import { MessageModel } from '@/models/message'
 import { CommentModel } from '@/models/comment'
-import { AlienModel } from '@/models/alien'
 import { InvalidMessageId } from '@/types/errors/message'
 import { messageLike } from '@/services/message'
 import { verifyAlien } from '@/middlewares/aliens'
@@ -23,8 +22,8 @@ router.get('/', async (req: Request, res: Response) => {
 
     const messages = result.docs.map((message) => ({
         ...message.toJSON(),
-        isLiked: message['likes'].includes(req.alien._id),
-        isAuthor: req.alien._id.equals(message['author']._id),
+        isLiked: message.likes.includes(req.alien._id),
+        isAuthor: message.author.equals(req.alien._id),
     }))
 
     res.status(200).json({
@@ -46,6 +45,8 @@ router.post('/', async (req: Request, res: Response) => {
         title: req.body.title,
         content: req.body.content,
         author: req.alien._id,
+        authorNickname: req.alien.nickname,
+        authorOrganization: req.alien.organization,
     })
     res.sendStatus(204)
 })
@@ -59,23 +60,13 @@ router.put('/:messageId', verifyMessageAuthor, async (req: Request, res: Respons
 router.get('/:messageId', async (req: Request, res: Response) => {
     const message = await MessageModel.findById(req.params.messageId)
 
-    // TODO author 가 없는 경우 nickname 과 organization 처리 방향 결정
-    let author = {
-        nickname: '',
-        organization: '',
-    }
-    try {
-        author = await AlienModel.findById(message.author)
-    } catch (e) {
-        // TODO author 없는 경우 이외의 다른 에러 처리
-    }
     res.status(200).json({
         _id: message._id,
         title: message.title,
         content: message.content,
         author: {
-            nickname: author.nickname,
-            organization: author.organization,
+            nickname: message.authorNickname,
+            organization: message.authorOrganization,
         },
         commentCount: message.commentCount,
         isLiked: message.likes.includes(req.alien._id),

@@ -25,6 +25,12 @@ export class Message extends TimeStamps {
     @prop({ required: true, ref: Alien })
     author: mongoose.Types.ObjectId
 
+    @prop({ required: true })
+    authorNickname: string
+
+    @prop({ required: true })
+    authorOrganization: string
+
     @prop({ default: 0 })
     commentCount: number
 
@@ -43,7 +49,11 @@ export class Message extends TimeStamps {
             _id: this._id,
             title: this.title,
             content: this.content,
-            author: this.author,
+            author: {
+                id: this.author,
+                nickname: this.authorNickname,
+                organization: this.authorOrganization,
+            },
             commentCount: this.commentCount,
             likeCount: this.likeCount,
             isBlind: this.isBlind,
@@ -58,17 +68,13 @@ export class Message extends TimeStamps {
         page: number,
         limit: number,
         sort: object,
-    ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<typeof Message, object, PaginateOptions>>> {
+    ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<Message, object, PaginateOptions>>> {
         return await this.paginate(
             { planetId: planetId },
             {
                 sort: sort,
                 page: page,
                 limit: limit,
-                populate: {
-                    path: 'author',
-                    select: 'nickname organization',
-                },
             },
         )
     }
