@@ -41,6 +41,7 @@ router.put('/changeServerUrl', async (req, res) => {
 router.delete('/uninstall', async (req, res) => {
     const body = req.body as ApplicationUninstalledPayload
     await OrganizationModel.deleteByClientId(body.clientId)
+    await PlanetModel.deleteByClientId(body.clientId)
     res.sendStatus(204)
 })
 

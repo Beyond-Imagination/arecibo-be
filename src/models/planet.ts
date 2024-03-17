@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { DeleteResult } from 'mongodb'
 import { getModelForClass, index, prop, ReturnModelType } from '@typegoose/typegoose'
 
 import { PlanetNotFoundException } from '@/types/errors'
@@ -46,6 +47,10 @@ export class Planet {
 
     public static async findByIdArray(this: ReturnModelType<typeof Planet>, ids: string[]): Promise<Planet[]> {
         return this.find({ _id: { $in: ids } })
+    }
+
+    public static async deleteByClientId(this: ReturnModelType<typeof Planet>, clientId: string): Promise<DeleteResult> {
+        return this.deleteOne({ clientId: clientId })
     }
 }
 
