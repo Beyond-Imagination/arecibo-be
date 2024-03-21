@@ -6,6 +6,7 @@ import { signIn, signUp } from '@/services'
 import { verifyAlien } from '@/middlewares/aliens'
 import { AlienModel } from '@/models/alien'
 import { NicknameUpdateNotAllowed } from '@/types/errors'
+import { PlanetModel } from '@/models/planet'
 
 const router = asyncify(express.Router())
 
@@ -31,6 +32,14 @@ router.put('/nickname', verifyAlien, async (req: Request, res: Response) => {
         throw new NicknameUpdateNotAllowed()
     }
     res.sendStatus(204)
+})
+
+router.get('/planets/subscribe', verifyAlien, async (req: Request, res: Response) => {
+    const [planets, defaultPlanets] = await Promise.all([
+        PlanetModel.findByIdArray(req.alien.subscribe),
+        PlanetModel.findDefault(), //TODO: default planet 캐싱후 db call 하지 않도록 수정
+    ])
+    res.status(200).json({ planets: [...planets, ...defaultPlanets] })
 })
 
 export default router

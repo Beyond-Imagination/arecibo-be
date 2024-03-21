@@ -52,6 +52,10 @@ export class Planet {
     public static async deleteByClientId(this: ReturnModelType<typeof Planet>, clientId: string): Promise<DeleteResult> {
         return this.deleteOne({ clientId: clientId })
     }
+
+    public static async findSubscribablePlanetList(this: ReturnModelType<typeof Planet>): Promise<Planet[]> {
+        return this.find({ clientId: undefined })
+    }
 }
 
 export const PlanetModel = getModelForClass(Planet)
