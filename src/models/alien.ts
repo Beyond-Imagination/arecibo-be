@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
 import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
-import { AlienNotFoundException, NicknameDuplicatedError } from '@/types/errors'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
+
+import { AlienNotFoundException, NicknameDuplicatedError } from '@/types/errors'
 import { Organization } from './organization'
 
 export class Alien extends TimeStamps {

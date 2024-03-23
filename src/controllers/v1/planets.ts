@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import asyncify from 'express-asyncify'
-import { PlanetModel } from '@/models/planet'
+
+import { PlanetModel } from '@/models'
 import { verifyAlien } from '@/middlewares/aliens'
 
 const router = asyncify(express.Router({ mergeParams: true }))

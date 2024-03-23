@@ -2,8 +2,7 @@ import { DeleteResult } from 'mongodb'
 import mongoose from 'mongoose'
 import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
 
-import { space } from '@/types'
-import { OrganizationNotFoundException } from '@/types/errors/database'
+import { space, errors } from '@/types'
 import { getBearerToken } from '@/services/space'
 
 export class Organization implements space.IOrganizationSecret {
@@ -51,7 +50,7 @@ export class Organization implements space.IOrganizationSecret {
         if (organization) {
             return organization
         } else {
-            throw new OrganizationNotFoundException()
+            throw new errors.OrganizationNotFoundException()
         }
     }
 

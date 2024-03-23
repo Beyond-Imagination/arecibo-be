@@ -2,11 +2,10 @@ import express from 'express'
 import asyncify from 'express-asyncify'
 
 import { InitPayload, ChangeServerUrlPayload, ApplicationUninstalledPayload } from '@/types/space'
-import { OrganizationModel } from '@/models/organization'
+import { OrganizationModel, PlanetModel } from '@/models'
 import { getOrganization, sync } from '@/services/space'
 import { getInstallInfo } from '@/utils/version'
 import { verifySpaceRequest } from '@/middlewares/space'
-import { PlanetModel } from '@/models/planet'
 
 const router = asyncify(express.Router())
 

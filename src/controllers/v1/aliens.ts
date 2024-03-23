@@ -4,9 +4,8 @@ import asyncify from 'express-asyncify'
 import { verifySpaceUserRequest } from '@/middlewares/space'
 import { signIn, signUp } from '@/services'
 import { verifyAlien } from '@/middlewares/aliens'
-import { AlienModel } from '@/models/alien'
+import { AlienModel, PlanetModel } from '@/models'
 import { NicknameUpdateNotAllowed } from '@/types/errors'
-import { PlanetModel } from '@/models/planet'
 
 const router = asyncify(express.Router())
 

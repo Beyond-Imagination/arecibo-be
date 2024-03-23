@@ -2,9 +2,7 @@ import newrelic from 'newrelic'
 import schedule from 'node-schedule'
 
 import { logger } from '@/utils/logger'
-import { OrganizationModel } from '@/models/organization'
-import { AlienModel } from '@/models/alien'
-import { MessageModel } from '@/models/message'
+import { OrganizationModel, AlienModel, MessageModel } from '@/models'
 
 export default class Metric {
     private async organizationCount() {

@@ -1,9 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { v4 } from 'uuid'
 
-import { Alien, AlienModel } from '@/models/alien'
-import { PlanetModel } from '@/models/planet'
-import { Organization } from '@/models/organization'
+import { Alien, AlienModel, PlanetModel, Organization } from '@/models'
 
 export async function signUp(organization: Organization, provider: string, oauthId: string): Promise<Alien> {
     const planet = await PlanetModel.findByClientId(organization.clientId)

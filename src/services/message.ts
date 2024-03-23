@@ -1,4 +1,4 @@
-import { MessageModel } from '@/models/message'
+import { MessageModel } from '@/models'
 import { MessageNotFoundException } from '@/types/errors'
 
 export async function messageLike({ messageId, liker }): Promise<{ likeCount?: number; error?: string }> {

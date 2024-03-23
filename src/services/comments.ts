@@ -1,4 +1,4 @@
-import { CommentModel } from '@/models/comment'
+import { CommentModel } from '@/models'
 import { CommentNotFoundException } from '@/types/errors'
 
 export async function commentLike({ commentId, liker }): Promise<{ likeCount?: number; error?: string }> {

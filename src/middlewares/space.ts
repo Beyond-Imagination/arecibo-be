@@ -2,10 +2,9 @@ import { NextFunction, Request, Response } from 'express'
 import crypto from 'crypto'
 import jwkToPem from 'jwk-to-pem'
 
-import { OrganizationModel } from '@/models/organization'
+import { OrganizationModel, AlienModel } from '@/models'
 import { getPublicKeys, getUserProfile } from '@/services/space'
 import { space, errors } from '@/types'
-import { AlienModel } from '@/models/alien'
 
 export const classNameRouter = (req: Request, res: Response, next: NextFunction) => {
     switch (req.body.className) {

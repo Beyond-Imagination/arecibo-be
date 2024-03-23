@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { verify } from 'jsonwebtoken'
 
-import { AlienModel } from '@/models/alien'
+import { AlienModel } from '@/models'
 import { alienJWTPayload } from '@/types'
 
 export async function verifyAlien(req: Request, res: Response, next: NextFunction) {
