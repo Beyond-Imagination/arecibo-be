@@ -2,7 +2,7 @@ import express from 'express'
 import asyncify from 'express-asyncify'
 
 import { InitPayload, ChangeServerUrlPayload, ApplicationUninstalledPayload } from '@/types/space'
-import { OrganizationModel, PlanetModel } from '@/models'
+import { AlienModel, OrganizationModel, PlanetModel } from '@/models'
 import { getOrganization, sync } from '@/services/space'
 import { getInstallInfo } from '@/utils/version'
 import { verifySpaceRequest } from '@/middlewares/space'
@@ -41,6 +41,8 @@ router.delete('/uninstall', async (req, res) => {
     const body = req.body as ApplicationUninstalledPayload
     await OrganizationModel.deleteByClientId(body.clientId)
     await PlanetModel.deleteByClientId(body.clientId)
+    await AlienModel.deleteByOrganizationId(req.organization._id)
+
     res.sendStatus(204)
 })
 

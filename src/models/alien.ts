@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { DeleteResult } from 'mongodb'
 import { getModelForClass, prop, ReturnModelType } from '@typegoose/typegoose'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 
@@ -50,6 +51,10 @@ export class Alien extends TimeStamps {
                 throw error
             }
         }
+    }
+
+    public static async deleteByOrganizationId(this: ReturnModelType<typeof Alien>, organizationId: mongoose.Types.ObjectId): Promise<DeleteResult> {
+        return this.deleteMany({ organizationId: organizationId })
     }
 
     private static async findByFilter(this: ReturnModelType<typeof Alien>, filter: object): Promise<Alien> {
