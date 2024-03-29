@@ -25,7 +25,7 @@ export class Alien extends TimeStamps {
     public organization: string
 
     @prop()
-    public subscribe: string[]
+    public subscribe: mongoose.Types.ObjectId[]
 
     @prop()
     public lastNicknameUpdatedTime: Date

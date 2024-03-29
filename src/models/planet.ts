@@ -1,12 +1,13 @@
 import mongoose from 'mongoose'
 import { DeleteResult } from 'mongodb'
 import { getModelForClass, index, prop, ReturnModelType } from '@typegoose/typegoose'
+import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 
 import { PlanetNotFoundException } from '@/types/errors'
 
 @index({ clientId: 1 })
 @index({ default: 1 })
-export class Planet {
+export class Planet extends TimeStamps {
     public _id: mongoose.Types.ObjectId
 
     @prop({ required: true, unique: true })
@@ -22,10 +23,19 @@ export class Planet {
     public default: boolean
 
     @prop()
-    public createdAt: Date
+    public description: string
 
-    @prop()
-    public updatedAt: Date
+    public toJSON(): object {
+        return {
+            _id: this._id,
+            title: this.title,
+            category: this.category,
+            default: this.default,
+            description: this.description,
+            createdAt: this.createdAt,
+            updatedAt: this.updatedAt,
+        }
+    }
 
     public static async findByClientId(this: ReturnModelType<typeof Planet>, clientId: string): Promise<Planet> {
         return this.findByFilter({ clientId: clientId })
@@ -45,7 +55,7 @@ export class Planet {
         return this.find({ default: true })
     }
 
-    public static async findByIdArray(this: ReturnModelType<typeof Planet>, ids: string[]): Promise<Planet[]> {
+    public static async findByIdArray(this: ReturnModelType<typeof Planet>, ids: mongoose.Types.ObjectId[]): Promise<Planet[]> {
         return this.find({ _id: { $in: ids } })
     }
 
@@ -54,7 +64,7 @@ export class Planet {
     }
 
     public static async findSubscribablePlanetList(this: ReturnModelType<typeof Planet>): Promise<Planet[]> {
-        return this.find({ clientId: undefined })
+        return this.find({ clientId: undefined, default: false })
     }
 }
 

@@ -43,13 +43,13 @@ router.get('/planets/subscribe', verifyAlien, async (req: Request, res: Response
 
 router.post('/planets/:planetId/subscribe', verifyAlien, async (req: Request, res: Response) => {
     // TODO subscribe 되면 안되는 planet 확인 ex) 다른 organization 의 planet, default planet
-    AlienModel.updateOne({ _id: req.alien._id }, { $addToSet: { subscribe: req.params.planetId } })
+    await AlienModel.updateOne({ _id: req.alien._id }, { $addToSet: { subscribe: req.params.planetId } })
     res.sendStatus(204)
 })
 
 router.delete('/planets/:planetId/subscribe', verifyAlien, async (req: Request, res: Response) => {
     // TODO unsubscribe 되면 안되는 planet 확인 ex) 본인의 organization planet
-    AlienModel.updateOne({ _id: req.alien._id }, { $pull: { subscribe: req.params.planetId } })
+    await AlienModel.updateOne({ _id: req.alien._id }, { $pull: { subscribe: req.params.planetId } })
     res.sendStatus(204)
 })
 
