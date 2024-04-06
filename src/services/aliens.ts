@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { v4 } from 'uuid'
 
+import { SECRET_KEY } from '@/config'
 import { Alien, AlienModel, PlanetModel, Organization } from '@/models'
 
 export async function signUp(organization: Organization, provider: string, oauthId: string): Promise<Alien> {
@@ -18,8 +19,7 @@ export async function signUp(organization: Organization, provider: string, oauth
 
 export async function signIn(provider: string, alien: Alien): Promise<string> {
     // TODO last login 시간 저장
-    // TODO secret env 에서 받도록 수정
-    return jwt.sign({ id: alien.oauthId, provider: provider }, 'secret-수정필요', {
+    return jwt.sign({ id: alien.oauthId, provider: provider }, SECRET_KEY, {
         expiresIn: '1h',
         jwtid: v4(),
     })
