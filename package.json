@@ -1,6 +1,6 @@
 {
     "name": "arecibo-backend",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "main": "index.js",
     "repository": "ssh://git@git.jetbrains.space/beyond-imagination/arecibo/arecibo-backend.git",
     "author": "Beyond_Imagination <team@beyond-imagination.kr>",
