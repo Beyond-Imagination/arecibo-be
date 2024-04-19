@@ -11,7 +11,8 @@
         "dev": "cross-env NODE_ENV=development nodemon",
         "test": "jest",
         "build": "rm -rf dist && swc src -d dist --source-maps --copy-files",
-        "lint": "eslint --ignore-path .gitignore --ext .ts src/"
+        "lint": "eslint --ignore-path .gitignore --ext .ts src/",
+        "reviewer": "cross-env NODE_ENV=development node -r @swc-node/register src/scripts/reviewers.ts"
     },
     "dependencies": {
         "@typegoose/typegoose": "^11.7.0",
