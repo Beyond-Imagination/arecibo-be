@@ -13,7 +13,7 @@ const router = asyncify(express.Router({ mergeParams: true }))
 router.use(verifyAlien)
 
 router.get('/', async (req: Request, res: Response) => {
-    const sort = req.query.sort == 'likes' ? { likeCount: 1 } : { createdAt: -1 }
+    const sort = req.query.sort === 'likes' ? { likeCount: 1 } : { createdAt: -1 }
     const page = Number(req.query.page || 1)
     const limit = Number(req.query.size || 15)
 

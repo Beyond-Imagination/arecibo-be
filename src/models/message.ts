@@ -5,7 +5,7 @@ import { getModelForClass, prop, plugin, ReturnModelType } from '@typegoose/type
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 
 import { MessageNotFoundException } from '@/types/errors/database'
-import { Alien } from './alien'
+import { Planet, Alien } from '@/models'
 
 @plugin(mongoosePaginate)
 export class Message extends TimeStamps {
@@ -16,7 +16,7 @@ export class Message extends TimeStamps {
     @prop({ required: true })
     title: string
 
-    @prop({ required: true })
+    @prop({ required: true, ref: Planet })
     planetId: mongoose.Types.ObjectId
 
     @prop({ required: true })
@@ -47,6 +47,7 @@ export class Message extends TimeStamps {
     public toJSON(): object {
         return {
             _id: this._id,
+            planetId: this.planetId,
             title: this.title,
             content: this.content,
             author: {
@@ -75,6 +76,28 @@ export class Message extends TimeStamps {
                 sort: sort,
                 page: page,
                 limit: limit,
+            },
+        )
+    }
+
+    public static async findByAuthorId(
+        this: ReturnModelType<typeof Message>,
+        authorId: mongoose.Types.ObjectId,
+        page: number,
+        limit: number,
+        sort: object,
+    ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<Message, object, PaginateOptions>>> {
+        return await this.paginate(
+            { author: authorId },
+            {
+                sort: sort,
+                page: page,
+                limit: limit,
+                populate: {
+                    path: 'planetId',
+                    select: 'title',
+                },
+                select: '-author',
             },
         )
     }

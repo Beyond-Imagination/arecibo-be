@@ -5,7 +5,7 @@ import { getModelForClass, prop, plugin, ReturnModelType } from '@typegoose/type
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 
 import { CommentNotFoundException } from '@/types/errors/database'
-import { Alien } from './alien'
+import { Alien, Planet, Message } from '@/models'
 
 @plugin(mongoosePaginate)
 export class Comment extends TimeStamps {
@@ -13,10 +13,10 @@ export class Comment extends TimeStamps {
 
     public _id: mongoose.Types.ObjectId
 
-    @prop({ require: true })
+    @prop({ require: true, ref: Message })
     public messageId: mongoose.Types.ObjectId
 
-    @prop({ require: true })
+    @prop({ require: true, ref: Planet })
     public planetId: mongoose.Types.ObjectId
 
     @prop({ require: true })
@@ -86,6 +86,34 @@ export class Comment extends TimeStamps {
                         },
                     },
                 ],
+            },
+        )
+    }
+
+    public static async findByAuthorId(
+        this: ReturnModelType<typeof Comment>,
+        authorId: mongoose.Types.ObjectId,
+        page: number,
+        limit: number,
+        sort: object,
+    ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<typeof Comment, object, PaginateOptions>>> {
+        return await this.paginate(
+            { author: authorId },
+            {
+                sort: sort,
+                page: page,
+                limit: limit,
+                populate: [
+                    {
+                        path: 'planetId',
+                        select: 'title',
+                    },
+                    {
+                        path: 'messageId',
+                        select: 'title likes',
+                    },
+                ],
+                select: '-comments -author',
             },
         )
     }

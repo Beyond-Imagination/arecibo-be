@@ -4,7 +4,7 @@ import asyncify from 'express-asyncify'
 import { verifySpaceUserRequest } from '@/middlewares/space'
 import { signIn, signUp } from '@/services'
 import { verifyAlien } from '@/middlewares/aliens'
-import { AlienModel, PlanetModel } from '@/models'
+import { AlienModel, PlanetModel, MessageModel, CommentModel } from '@/models'
 import { NicknameUpdateNotAllowed } from '@/types/errors'
 
 const router = asyncify(express.Router())
@@ -51,6 +51,44 @@ router.delete('/planets/:planetId/subscribe', verifyAlien, async (req: Request, 
     // TODO unsubscribe 되면 안되는 planet 확인 ex) 본인의 organization planet
     await AlienModel.updateOne({ _id: req.alien._id }, { $pull: { subscribe: req.params.planetId } })
     res.sendStatus(204)
+})
+
+router.get('/messages', verifyAlien, async (req: Request, res: Response) => {
+    const sort = req.query.sort === 'likes' ? { likeCount: 1 } : { createdAt: -1 }
+    const page = Number(req.query.page || 1)
+    const limit = Number(req.query.size || 10)
+
+    const result = await MessageModel.findByAuthorId(req.alien._id, page, limit, sort)
+    res.status(200).json({
+        messages: result.docs,
+        page: {
+            totalDocs: result.totalDocs,
+            totalPages: result.totalPages,
+            hasNextPage: result.hasNextPage,
+            hasPrevPage: result.hasPrevPage,
+            page: result.page,
+            limit: result.limit,
+        },
+    })
+})
+
+router.get('/comments', verifyAlien, async (req: Request, res: Response) => {
+    const sort = req.query.sort === 'likes' ? { likeCount: 1 } : { createdAt: -1 }
+    const page = Number(req.query.page || 1)
+    const limit = Number(req.query.size || 10)
+
+    const result = await CommentModel.findByAuthorId(req.alien._id, page, limit, sort)
+    res.status(200).json({
+        comments: result.docs,
+        page: {
+            totalDocs: result.totalDocs,
+            totalPages: result.totalPages,
+            hasNextPage: result.hasNextPage,
+            hasPrevPage: result.hasPrevPage,
+            page: result.page,
+            limit: result.limit,
+        },
+    })
 })
 
 export default router
