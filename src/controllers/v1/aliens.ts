@@ -59,8 +59,13 @@ router.get('/messages', verifyAlien, async (req: Request, res: Response) => {
     const limit = Number(req.query.size || 10)
 
     const result = await MessageModel.findByAuthorId(req.alien._id, page, limit, sort)
+    const messages = result.docs.map((message) => ({
+        ...message.toJSON(),
+        isLiked: message.likes.includes(req.alien._id),
+    }))
+
     res.status(200).json({
-        messages: result.docs,
+        messages: messages,
         page: {
             totalDocs: result.totalDocs,
             totalPages: result.totalPages,
@@ -78,8 +83,14 @@ router.get('/comments', verifyAlien, async (req: Request, res: Response) => {
     const limit = Number(req.query.size || 10)
 
     const result = await CommentModel.findByAuthorId(req.alien._id, page, limit, sort)
+    const comments = result.docs.map((comment) => ({
+        ...comment.toJSON(),
+        commentsCount: comment.comments.length,
+        isLiked: comment.likes.includes(req.alien._id),
+    }))
+
     res.status(200).json({
-        comments: result.docs,
+        comments: comments,
         page: {
             totalDocs: result.totalDocs,
             totalPages: result.totalPages,

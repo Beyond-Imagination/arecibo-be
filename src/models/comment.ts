@@ -66,7 +66,7 @@ export class Comment extends TimeStamps {
         messageId: string,
         page: number,
         limit: number,
-    ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<typeof Comment, object, PaginateOptions>>> {
+    ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<Comment, object, PaginateOptions>>> {
         return await this.paginate(
             { messageId: messageId, isNested: false },
             {
@@ -96,7 +96,7 @@ export class Comment extends TimeStamps {
         page: number,
         limit: number,
         sort: object,
-    ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<typeof Comment, object, PaginateOptions>>> {
+    ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<Comment, object, PaginateOptions>>> {
         return await this.paginate(
             { author: authorId },
             {
@@ -113,7 +113,7 @@ export class Comment extends TimeStamps {
                         select: 'title likes',
                     },
                 ],
-                select: '-comments -author',
+                select: '-author',
             },
         )
     }
