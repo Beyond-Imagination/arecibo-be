@@ -23,3 +23,11 @@ export class NicknameDuplicatedError extends APIError {
         Error.captureStackTrace(this, NicknameUpdateNotAllowed)
     }
 }
+
+export class JWTExpiredError extends APIError {
+    constructor() {
+        super(401, 635, 'token is expired')
+        Object.setPrototypeOf(this, JWTExpiredError.prototype)
+        Error.captureStackTrace(this, JWTExpiredError)
+    }
+}
