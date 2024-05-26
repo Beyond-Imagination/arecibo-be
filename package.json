@@ -7,7 +7,7 @@
     "license": "MIT",
     "scripts": {
         "prepare": "husky install",
-        "start": "yarn build && cross-env NODE_ENV=production node ./dist/app.js",
+        "start": "pnpm build && cross-env NODE_ENV=production node ./dist/app.js",
         "dev": "cross-env NODE_ENV=development nodemon",
         "test": "jest",
         "build": "rm -rf dist && swc src -d dist --source-maps --copy-files",
@@ -28,7 +28,7 @@
         "jsonwebtoken": "^9.0.2",
         "jwk-to-pem": "^2.0.5",
         "lru-cache": "^10.0.3",
-        "mongoose": "^8.0.0",
+        "mongoose": "^7.6.12",
         "mongoose-paginate-v2": "^1.7.4",
         "newrelic": "^11.9.0",
         "node-fetch": "2.7.0",
