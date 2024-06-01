@@ -5,7 +5,7 @@ import { commentLike } from '@/services/comments'
 
 import { MessageModel, CommentModel } from '@/models'
 import { verifyAlien } from '@/middlewares/aliens'
-import { HasNestedComment, InvalidCommentId } from '@/types/errors'
+import { InvalidCommentId } from '@/types/errors'
 import { verifyCommentAuthor } from '@/middlewares/comment'
 
 const router = asyncify(express.Router({ mergeParams: true }))
@@ -86,20 +86,20 @@ router.put('/:commentId', verifyCommentAuthor, async (req: Request, res: Respons
 })
 
 router.delete('/:commentId', verifyCommentAuthor, async (req: Request, res: Response) => {
-    // TODO: nested comment를 가진 comment 처리 방식 수정
     if (req.comment.comments.length !== 0) {
-        throw new HasNestedComment()
-    }
-
-    // TODO: transaction 처리
-    if (req.comment.isNested) {
-        await CommentModel.updateOne({ _id: req.comment.parentCommentId }, { $pull: { comments: req.comment._id } })
+        await CommentModel.updateOne({ _id: req.comment._id }, { $set: { text: 'This comment was deleted', likes: [], isDeleted: true } })
     } else {
-        await MessageModel.updateOne({ _id: req.comment.messageId }, { $inc: { commentCount: -1 } })
-    }
-    const deleteResult: DeleteResult = await CommentModel.deleteById(req.params.commentId)
-    if (deleteResult.deletedCount === 0) {
-        throw new InvalidCommentId()
+        // TODO: transaction 처리
+        if (req.comment.isNested) {
+            await CommentModel.updateOne({ _id: req.comment.parentCommentId }, { $pull: { comments: req.comment._id } })
+        } else {
+            await MessageModel.updateOne({ _id: req.comment.messageId }, { $inc: { commentCount: -1 } })
+        }
+
+        const deleteResult: DeleteResult = await CommentModel.deleteById(req.params.commentId)
+        if (deleteResult.deletedCount === 0) {
+            throw new InvalidCommentId()
+        }
     }
 
     res.sendStatus(204)

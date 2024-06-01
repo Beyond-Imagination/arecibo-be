@@ -7,11 +7,3 @@ export class InvalidCommentId extends APIError {
         Error.captureStackTrace(this, InvalidCommentId)
     }
 }
-
-export class HasNestedComment extends APIError {
-    constructor() {
-        super(400, 622, 'comment has nested comments')
-        Object.setPrototypeOf(this, InvalidCommentId.prototype)
-        Error.captureStackTrace(this, InvalidCommentId)
-    }
-}

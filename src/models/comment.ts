@@ -40,6 +40,9 @@ export class Comment extends TimeStamps {
     @prop({ default: false })
     public isBlind: boolean
 
+    @prop({ default: false })
+    public isDeleted: boolean
+
     public get likeCount(): number {
         return this.likes.length
     }
@@ -56,6 +59,7 @@ export class Comment extends TimeStamps {
             comments: this.comments,
             isNested: this.isNested,
             isBlind: this.isBlind,
+            isDeleted: this.isDeleted,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
         }
@@ -98,7 +102,7 @@ export class Comment extends TimeStamps {
         sort: object,
     ): Promise<mongoose.PaginateResult<mongoose.PaginateDocument<Comment, object, PaginateOptions>>> {
         return await this.paginate(
-            { author: authorId },
+            { author: authorId, isDeleted: false },
             {
                 sort: sort,
                 page: page,
