@@ -29,6 +29,10 @@ export class Organization implements space.IOrganizationSecret {
     @prop()
     public updatedAt: Date
 
+    public static async findById(this: ReturnModelType<typeof Organization>, organziationId: mongoose.Types.ObjectId): Promise<Organization> {
+        return this.findByFilter({ _id: organziationId })
+    }
+
     public static async findByServerUrl(this: ReturnModelType<typeof Organization>, serverUrl: string): Promise<Organization> {
         return this.findByFilter({ serverUrl })
     }

@@ -1,7 +1,7 @@
 import { MessageModel } from '@/models'
 import { MessageNotFoundException } from '@/types/errors'
 
-export async function messageLike({ messageId, liker }): Promise<{ likeCount?: number; error?: string }> {
+export async function messageLike({ messageId, likerId }): Promise<{ likeCount?: number; error?: string }> {
     try {
         const message = await MessageModel.findById(messageId)
 
@@ -9,10 +9,10 @@ export async function messageLike({ messageId, liker }): Promise<{ likeCount?: n
             throw new MessageNotFoundException()
         }
 
-        const alreadyLiked = message.likes.includes(liker)
+        const alreadyLiked = message.likes.includes(likerId)
 
         // TODO : api 동시 요청 처리
-        const update = alreadyLiked ? { $pull: { likes: liker } } : { $push: { likes: liker } }
+        const update = alreadyLiked ? { $pull: { likes: likerId } } : { $push: { likes: likerId } }
 
         const updatedMessage = await MessageModel.findOneAndUpdate({ _id: message._id }, update, {
             new: true,

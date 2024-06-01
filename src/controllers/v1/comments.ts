@@ -7,6 +7,7 @@ import { MessageModel, CommentModel } from '@/models'
 import { verifyAlien } from '@/middlewares/aliens'
 import { InvalidCommentId } from '@/types/errors'
 import { verifyCommentAuthor } from '@/middlewares/comment'
+import { notifyWhenCommentOnMessage, notifyWhenLikeOnComment, notifyWhenReplyToComment } from '@/services/aliens'
 
 const router = asyncify(express.Router({ mergeParams: true }))
 
@@ -49,13 +50,15 @@ router.get('/', async (req: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
     // TODO: transaction 처리
     const message = await MessageModel.findById(req.params.messageId)
-    await CommentModel.create({
+    const comment = await CommentModel.create({
         planetId: message.planetId,
         messageId: message._id,
         text: req.body.text,
         author: req.alien._id,
     })
     await MessageModel.updateOne({ _id: message._id }, { $inc: { commentCount: 1 } })
+
+    await notifyWhenCommentOnMessage(message, comment)
 
     res.sendStatus(204)
 })
@@ -72,6 +75,8 @@ router.post('/:commentId', async (req: Request, res: Response) => {
         isNested: true,
     })
     await CommentModel.updateOne({ _id: comment._id }, { $push: { comments: nestedComment } })
+
+    await notifyWhenReplyToComment(comment, nestedComment)
 
     res.sendStatus(204)
 })
@@ -108,7 +113,7 @@ router.delete('/:commentId', verifyCommentAuthor, async (req: Request, res: Resp
 router.post('/:commentId/likes', async (req: Request, res: Response) => {
     const params = {
         commentId: req.params.commentId,
-        liker: req.alien._id,
+        likerId: req.alien._id,
     }
 
     const result = await commentLike(params)
@@ -116,6 +121,7 @@ router.post('/:commentId/likes', async (req: Request, res: Response) => {
     if (result.error) {
         res.status(400).json({ message: result.error })
     } else {
+        await notifyWhenLikeOnComment(params)
         res.status(200).json({ likeCount: result.likeCount })
     }
 })

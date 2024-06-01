@@ -1,7 +1,7 @@
 import { CommentModel } from '@/models'
 import { CommentNotFoundException } from '@/types/errors'
 
-export async function commentLike({ commentId, liker }): Promise<{ likeCount?: number; error?: string }> {
+export async function commentLike({ commentId, likerId }): Promise<{ likeCount?: number; error?: string }> {
     try {
         const comment = await CommentModel.findById({ _id: commentId })
 
@@ -9,10 +9,10 @@ export async function commentLike({ commentId, liker }): Promise<{ likeCount?: n
             throw new CommentNotFoundException()
         }
 
-        const alreadyLiked = comment.likes.includes(liker)
+        const alreadyLiked = comment.likes.includes(likerId)
 
         // TODO : api 동시 요청 처리
-        const update = alreadyLiked ? { $pull: { likes: liker } } : { $push: { likes: liker } }
+        const update = alreadyLiked ? { $pull: { likes: likerId } } : { $push: { likes: likerId } }
 
         const updatedComment = await CommentModel.findOneAndUpdate({ _id: comment._id }, update, {
             new: true,

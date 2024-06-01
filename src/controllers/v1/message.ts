@@ -7,6 +7,7 @@ import { InvalidMessageId } from '@/types/errors/message'
 import { messageLike } from '@/services/message'
 import { verifyAlien } from '@/middlewares/aliens'
 import { verifyMessageAuthor } from '@/middlewares/message'
+import { notifyWhenLikeOnMessage } from '@/services/aliens'
 
 const router = asyncify(express.Router({ mergeParams: true }))
 
@@ -80,7 +81,7 @@ router.get('/:messageId', async (req: Request, res: Response) => {
 router.post('/:messageId/likes', async (req: Request, res: Response) => {
     const params = {
         messageId: req.params.messageId,
-        liker: req.alien._id,
+        likerId: req.alien._id,
     }
 
     const result = await messageLike(params)
@@ -88,6 +89,7 @@ router.post('/:messageId/likes', async (req: Request, res: Response) => {
     if (result.error) {
         res.status(400).json({ message: result.error })
     } else {
+        await notifyWhenLikeOnMessage(params)
         res.status(200).json({ likeCount: result.likeCount })
     }
 })
