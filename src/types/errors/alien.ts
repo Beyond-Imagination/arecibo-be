@@ -31,3 +31,19 @@ export class JWTExpiredError extends APIError {
         Error.captureStackTrace(this, JWTExpiredError)
     }
 }
+
+export class JsonWebTokenError extends APIError {
+    constructor() {
+        super(401, 636, 'invalid jwt')
+        Object.setPrototypeOf(this, JsonWebTokenError.prototype)
+        Error.captureStackTrace(this, JsonWebTokenError)
+    }
+}
+
+export class JWTNotBeforeError extends APIError {
+    constructor() {
+        super(401, 637, 'jwt not active')
+        Object.setPrototypeOf(this, JWTNotBeforeError.prototype)
+        Error.captureStackTrace(this, JWTNotBeforeError)
+    }
+}

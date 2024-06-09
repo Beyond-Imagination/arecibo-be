@@ -4,7 +4,7 @@ import { verify } from 'jsonwebtoken'
 import { SECRET_KEY } from '@/config'
 import { AlienModel } from '@/models'
 import { alienJWTPayload } from '@/types'
-import { JWTExpiredError } from '@/types/errors'
+import { JWTExpiredError, JsonWebTokenError, JWTNotBeforeError } from '@/types/errors'
 
 export async function verifyAlien(req: Request, res: Response, next: NextFunction) {
     const token = req.header('Authorization')
@@ -20,8 +20,10 @@ export async function verifyAlien(req: Request, res: Response, next: NextFunctio
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             throw new JWTExpiredError()
-        } else {
-            throw new Error(error.message)
+        } else if (error.name === 'JsonWebTokenError') {
+            throw new JsonWebTokenError()
+        } else if (error.name === 'NotBeforeError') {
+            throw new JWTNotBeforeError()
         }
     }
 
