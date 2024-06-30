@@ -44,6 +44,7 @@ export default class API {
         this.app.use('/v1/planets', controllers.v1.planets)
         this.app.use('/v1/planets/:planetId/messages', controllers.v1.messages)
         this.app.use('/v1/planets/:planetId/messages/:messageId/comments', controllers.v1.comments)
+        this.app.use('/v1/s3', controllers.v1.s3)
     }
 
     setPostMiddleware() {
