@@ -1,27 +1,39 @@
 # arecibo/arecibo-backend
+This is the source code for developing the Arecibo backend.
+
+## Arecibo
+Arecibo is a communication tool for JetBrains Space users that enables smooth interactions both within and outside the organization. Inspired by the concept of sending Arecibo messages across space, it allows you to freely send and receive messages beyond organizational boundaries.
+
+**Key Features**
+**Join Planets**: Join various "Planet" (organizations) to communicate and interact with users from different countries, companies, and communities. Expand your network and engage with diverse groups.
+
+**Create Planets**: Multiple organizations can create their own "Planet" forming dedicated spaces for communication. This community app allows for seamless interaction and collaboration within and across different groups.
+
+**Leave Messages**: Post messages and share insights. Users can leave comments and likes to exchange information and respond to each other's content, fostering a collaborative environment.
+
+
+## Requirements
+The following are required to run the backend:
+
+* Node.js version 18 or higher
+
+## .env
+To apply environment variables, you need to create an .env file.
+Please follow the instructions provided in the link below to create the file:
+
+[Reference Link](https://beyond-imagination.jetbrains.space/p/telescope/documents/%EA%B5%AC%ED%98%84-%EB%AC%B8%EC%84%9C/a/env-%ED%8C%8C%EC%9D%BC)
 
 ## Getting Started
 
-Download links:
-
-SSH clone URL: ssh://git@git.jetbrains.space/beyond-imagination/arecibo/arecibo-backend.git
-
-HTTPS clone URL: https://git.jetbrains.space/beyond-imagination/arecibo/arecibo-backend.git
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
-## Prerequisites
-
-What things you need to install the software and how to install them.
-
+```shell
+pnpm install
+pnpm dev
 ```
-Examples
-```
+## MongoDB Atlas
+For Arecico development, we use MongoDB Atlas.
 
-## Deployment
+**Invitations**
+If you have not received an invitation, please request one from the project administrator.
 
-Add additional notes about how to deploy this on a production system.
-
-## Resources
-
-Add links to external resources for this project, such as CI server, bug tracker, etc.
+**Network Access**
+To access MongoDB Atlas, you need to add your IP address to the whitelist. You can do this directly through the Atlas web UI.
