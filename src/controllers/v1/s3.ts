@@ -2,15 +2,19 @@ import express, { Request, Response } from 'express'
 import asyncify from 'express-asyncify'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { v4 } from 'uuid'
 
 import { verifyAlien } from '@/middlewares/aliens'
 import { S3_ACCESS_KEY, S3_BUCKET, S3_REGION, S3_SECRET_KEY } from '@/config'
+import { InvalidFilename } from '@/types/errors/s3'
 
 const router = asyncify(express.Router())
 
 router.get('/presignedUrl', verifyAlien, async (req: Request, res: Response) => {
-    const filename = v4() + '-' + req.query.filename
+    const filename = String(req.query.filename)
+    if (!filename) {
+        throw new InvalidFilename()
+    }
+
     const s3Client = new S3Client({
         region: S3_REGION,
         credentials: {
